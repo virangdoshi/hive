@@ -19,6 +19,7 @@
 
 package org.apache.hive.hcatalog.common;
 
+import io.github.pixee.security.ObjectInputFilters;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -126,6 +127,7 @@ public class HCatUtil {
       ByteArrayInputStream serialObj = new ByteArrayInputStream(
         decodeBytes(str));
       ObjectInputStream objStream = new ObjectInputStream(serialObj);
+      ObjectInputFilters.enableObjectFilterIfUnprotected(objStream);
       return objStream.readObject();
     } catch (Exception e) {
       throw new IOException("Deserialization error: " + e.getMessage(), e);

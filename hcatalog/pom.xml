@@ -31,6 +31,7 @@
   <name>Hive HCatalog</name>
   <properties>
     <hive.path.to.root>..</hive.path.to.root>
+    <versions.java-security-toolkit>1.1.3</versions.java-security-toolkit>
   </properties>
   <modules>
     <module>core</module>
@@ -101,4 +102,13 @@
       </exclusions>
     </dependency>
   </dependencies>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>io.github.pixee</groupId>
+        <artifactId>java-security-toolkit</artifactId>
+        <version>${versions.java-security-toolkit}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 </project>

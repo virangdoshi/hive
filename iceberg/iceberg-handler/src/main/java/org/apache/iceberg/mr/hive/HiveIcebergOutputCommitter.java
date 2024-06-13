@@ -19,6 +19,7 @@
 
 package org.apache.iceberg.mr.hive;
 
+import io.github.pixee.security.ObjectInputFilters;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -633,6 +634,7 @@ public class HiveIcebergOutputCommitter extends OutputCommitter {
 
   private static FilesForCommit readFileForCommit(String fileForCommitLocation, FileIO io) {
     try (ObjectInputStream ois = new ObjectInputStream(io.newInputFile(fileForCommitLocation).newStream())) {
+      ObjectInputFilters.enableObjectFilterIfUnprotected(ois);
       return (FilesForCommit) ois.readObject();
     } catch (ClassNotFoundException | IOException e) {
       throw new NotFoundException("Can not read or parse committed file: %s", fileForCommitLocation);
