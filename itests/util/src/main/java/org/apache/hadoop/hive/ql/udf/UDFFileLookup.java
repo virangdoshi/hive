@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.udf;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -45,13 +46,13 @@ public class UDFFileLookup extends UDF {
     File file = new File("./sales.txt");
     BufferedReader br = new BufferedReader(new FileReader(file));
     data = new HashMap<String, Integer>();
-    String line = br.readLine();
+    String line = BoundedLineReader.readLine(br, 5_000_000);
     while (line != null) {
       String[] parts = line.split("\t", 2);
       if (parts.length == 2) {
         data.put(parts[0], Integer.valueOf(parts[1]));
       }
-      line = br.readLine();
+      line = BoundedLineReader.readLine(br, 5_000_000);
     }
     br.close();
   }

@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -186,7 +187,7 @@ public class QOutProcessor {
 
     boolean lastWasMasked = false;
 
-    while (null != (line = in.readLine())) {
+    while (null != (line = BoundedLineReader.readLine(in, 5_000_000))) {
       LineProcessingResult result = processLine(line);
 
       if (result.line.equals(MASK_PATTERN)) {

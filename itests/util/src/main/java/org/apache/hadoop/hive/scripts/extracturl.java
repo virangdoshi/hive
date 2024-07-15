@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.scripts;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.regex.Matcher;
@@ -38,7 +39,7 @@ public final class extracturl {
   public static void main(String[] args) {
     String input;
     try {
-      while ((input = in.readLine()) != null) {
+      while ((input = BoundedLineReader.readLine(in, 5_000_000)) != null) {
         Matcher m = pattern.matcher(input);
 
         while (m.find()) {

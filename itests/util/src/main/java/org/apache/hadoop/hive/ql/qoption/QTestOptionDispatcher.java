@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.qoption;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -57,7 +58,7 @@ public class QTestOptionDispatcher {
     Pattern p = Pattern.compile(" *--! ?qt:([a-z]+):?(.*)");
 
     try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-      for (String line = br.readLine(); line != null; line = br.readLine()) {
+      for (String line = BoundedLineReader.readLine(br, 5_000_000); line != null; line = BoundedLineReader.readLine(br, 5_000_000)) {
         String l = line.trim();
         Matcher m = p.matcher(l);
         if (m.matches()) {
