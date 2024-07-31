@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.metastore.dataconnector.jdbc;
 
+import java.sql.PreparedStatement;
 import org.apache.hadoop.hive.metastore.ColumnType;
 import org.apache.hadoop.hive.metastore.api.DataConnector;
 import org.apache.hadoop.hive.metastore.api.MetaException;
@@ -61,12 +62,13 @@ public class MySQLConnectorProvider extends AbstractJDBCConnectorProvider {
    */
   @Override public ResultSet fetchTableMetadata(String tableName) throws MetaException {
     try {
-      Statement stmt = getConnection().createStatement();
-      ResultSet rs = stmt.executeQuery(
-          "SELECT table_name, column_name, is_nullable, data_type, character_maximum_length FROM INFORMATION_SCHEMA.Columns where table_schema='"
-              + scoped_db + "' and table_name='" + tableName + "'");
+      PreparedStatement stmt = getConnection().prepareStatement("SELECT table_name, column_name, is_nullable, data_type, character_maximum_length FROM INFORMATION_SCHEMA.Columns where table_schema=? and table_name=?");
+      stmt.setString(1, scoped_db);
+      stmt.setString(2, tableName);
+      ResultSet rs = stmt.execute(
+      );
       return rs;
-    } catch (Exception e) {
+        } catch (Exception e) {
       LOG.warn("Exception retrieving remote table " + scoped_db + "." + tableName + " via data connector "
           + connector.getName());
       throw new MetaException("Error retrieving remote table:" + e);
