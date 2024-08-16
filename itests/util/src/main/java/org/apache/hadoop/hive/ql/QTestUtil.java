@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import static org.apache.hadoop.hive.metastore.Warehouse.DEFAULT_DATABASE_NAME;
 
 import java.io.BufferedOutputStream;
@@ -203,9 +205,9 @@ public class QTestUtil {
 
     // HIVE-14443 move this fall-back logic to CliConfigs
     if (testArgs.getConfDir() != null && !testArgs.getConfDir().isEmpty()) {
-      HiveConf.setHiveSiteLocation(new URL("file://"
+      HiveConf.setHiveSiteLocation(Urls.create("file://"
           + new File(testArgs.getConfDir()).toURI().getPath()
-          + "/hive-site.xml"));
+          + "/hive-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
       MetastoreConf.setHiveSiteLocation(HiveConf.getHiveSiteLocation());
       System.out.println("Setting hive-site: " + HiveConf.getHiveSiteLocation());
     }
