@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 
 
 import org.apache.commons.lang3.StringUtils;
@@ -322,7 +323,7 @@ public class TestSchemaTool {
   }
 
   private File generateTestScript(String [] stmts) throws IOException {
-    File testScriptFile = File.createTempFile("schematest", ".sql");
+    File testScriptFile = Files.createTempFile("schematest", ".sql").toFile();
     testScriptFile.deleteOnExit();
     FileWriter fstream = new FileWriter(testScriptFile.getPath());
     BufferedWriter out = new BufferedWriter(fstream);

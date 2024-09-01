@@ -18,6 +18,7 @@
 package org.apache.hive.beeline;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -305,7 +306,7 @@ public class ProxyAuthTest {
       "5|eee",
     };
 
-    File tmpFile = File.createTempFile(tabName, ".data");
+    File tmpFile = Files.createTempFile(tabName, ".data").toFile();
     tmpFile.deleteOnExit();
     tabDataFileName = tmpFile.getPath();
     FileWriter fstream = new FileWriter(tabDataFileName);
@@ -328,7 +329,7 @@ public class ProxyAuthTest {
     }
     writeCmdLine("!brief", out);
     writeCmdLine("!set silent true", out);
-    resultFile = File.createTempFile(tabName, ".out");
+    resultFile = Files.createTempFile(tabName, ".out").toFile();
     if (!"true".equals(System.getProperty("proxyAuth.debug", "false"))) {
       resultFile.deleteOnExit();
     }
@@ -348,7 +349,7 @@ public class ProxyAuthTest {
     writeCmdLine("!record", out);
     writeCmdLine("!quit", out);
 
-    File tmpFile = File.createTempFile(tabName, ".q");
+    File tmpFile = Files.createTempFile(tabName, ".q").toFile();
     tmpFile.deleteOnExit();
     scriptFileName = tmpFile.getPath();
     FileOutputStream fstream = new FileOutputStream(scriptFileName);

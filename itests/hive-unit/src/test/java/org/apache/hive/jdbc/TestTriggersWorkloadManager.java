@@ -19,6 +19,7 @@ package org.apache.hive.jdbc;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +61,7 @@ public class TestTriggersWorkloadManager extends TestTriggersTezSessionPoolManag
     HiveConf.setHiveSiteLocation(new URL("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml"));
     conf = new HiveConf();
     conf.setVar(ConfVars.HIVE_AUTHENTICATOR_MANAGER, "org.apache.hadoop.hive.ql.security.SessionStateUserAuthenticator");
-    java.nio.file.Path confPath = File.createTempFile("hive", "test").toPath();
+    java.nio.file.Path confPath = Files.createTempFile("hive", "test").toFile().toPath();
     conf.writeXml(new FileWriter(confPath.toFile()));
     HiveConf.setHiveSiteLocation(new URL("file://" + confPath.toString()));
 

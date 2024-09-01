@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.metastore.tools.schematool;
 
 import com.google.common.annotations.VisibleForTesting;
+import java.nio.file.Files;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
@@ -430,7 +431,7 @@ public class MetastoreSchemaTool {
     try {
       init(findHomeDir(), args, null, MetastoreConf.newMetastoreConf());
       // Cannot run script directly from input stream thus copy is necessary.
-      File scriptFile = File.createTempFile("schemaToolTmpScript", "sql");
+      File scriptFile = Files.createTempFile("schemaToolTmpScript", "sql").toFile();
       scriptFile.deleteOnExit();
       FileUtils.copyToFile(scriptStream, scriptFile);
       execSql(scriptFile.getAbsolutePath());

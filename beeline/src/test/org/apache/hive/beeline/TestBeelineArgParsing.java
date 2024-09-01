@@ -356,7 +356,7 @@ public class TestBeelineArgParsing {
   @Test
   public void testBeelinePasswordMask() throws Exception {
     TestBeeline bl = new TestBeeline();
-    File errFile = File.createTempFile("test", "tmp");
+    File errFile = Files.createTempFile("test", "tmp").toFile();
     bl.setErrorStream(new PrintStream(new FileOutputStream(errFile)));
     String args[] =
         new String[] { "-u", "url", "-n", "name", "-p", "password", "-d", "driver",

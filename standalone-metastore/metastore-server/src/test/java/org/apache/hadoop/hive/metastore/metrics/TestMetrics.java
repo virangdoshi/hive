@@ -89,7 +89,7 @@ public class TestMetrics {
 
   @Test
   public void jsonReporter() throws Exception {
-    File jsonReportFile = File.createTempFile("TestMetrics", ".json");
+    File jsonReportFile = Files.createTempFile("TestMetrics", ".json").toFile();
     String jsonFile = jsonReportFile.getAbsolutePath();
 
     Configuration conf = MetastoreConf.newMetastoreConf();
@@ -117,7 +117,7 @@ public class TestMetrics {
 
   @Test
   public void testJsonStructure() throws Exception {
-    File jsonReportFile = File.createTempFile("TestMetrics", ".json");
+    File jsonReportFile = Files.createTempFile("TestMetrics", ".json").toFile();
     String jsonFile = jsonReportFile.getAbsolutePath();
 
     Configuration conf = MetastoreConf.newMetastoreConf();

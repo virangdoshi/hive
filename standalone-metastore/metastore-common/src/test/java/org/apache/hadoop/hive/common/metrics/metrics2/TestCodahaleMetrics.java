@@ -68,7 +68,7 @@ public class TestCodahaleMetrics {
 
     Configuration conf = new Configuration();
 
-    jsonReportFile = File.createTempFile("TestCodahaleMetrics", ".json");
+    jsonReportFile = Files.createTempFile("TestCodahaleMetrics", ".json").toFile();
     System.out.println("Json metrics saved in " + jsonReportFile.getAbsolutePath());
 
     conf.set(MetastoreConf.ConfVars.METRICS_CLASS.getHiveName(), CodahaleMetrics.class.getCanonicalName());

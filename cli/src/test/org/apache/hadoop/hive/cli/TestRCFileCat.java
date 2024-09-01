@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.cli;
 
+import java.nio.file.Files;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -48,7 +49,7 @@ public class TestRCFileCat {
    */
   @Test
   public void testRCFileCat() throws Exception {
-    File template = File.createTempFile("hive", "tmpTest");
+    File template = Files.createTempFile("hive", "tmpTest").toFile();
     Configuration configuration = new Configuration();
 
     byte[][] record_1 = { Bytes.toBytes("123"), Bytes.toBytes("456"),

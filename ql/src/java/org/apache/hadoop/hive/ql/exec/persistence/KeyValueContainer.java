@@ -21,6 +21,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang3.tuple.MutablePair;
@@ -80,7 +81,7 @@ public class KeyValueContainer {
       }
 
       if (tmpFile == null || input != null) {
-        tmpFile = File.createTempFile("KeyValueContainer", ".tmp", parentDir);
+        tmpFile = Files.createTempFile(parentDir.toPath(), "KeyValueContainer", ".tmp").toFile();
         LOG.info("KeyValueContainer created temp file " + tmpFile.getAbsolutePath());
         tmpFile.deleteOnExit();
       }

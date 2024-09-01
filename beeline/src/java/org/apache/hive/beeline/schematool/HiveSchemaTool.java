@@ -17,6 +17,7 @@
  */
 package org.apache.hive.beeline.schematool;
 
+import java.nio.file.Files;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.OptionGroup;
@@ -69,7 +70,7 @@ public class HiveSchemaTool extends MetastoreSchemaTool {
     // to be adjusted for the underlying RDBMS (correct quotation
     // strings, etc).
     String sqlCommands = dbCommandParser.buildCommand(scriptDir, scriptFile, metaDbType != null);
-    File tmpFile = File.createTempFile("schematool", ".sql");
+    File tmpFile = Files.createTempFile("schematool", ".sql").toFile();
     tmpFile.deleteOnExit();
 
     // write out the buffer into a file. Add beeline commands for autocommit and close
