@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.mapreduce;
 
+import io.github.pixee.security.ObjectInputFilters;
 import org.apache.hadoop.classification.InterfaceAudience;
 import org.apache.hadoop.classification.InterfaceStability;
 import org.apache.hadoop.hive.metastore.Warehouse;
@@ -195,8 +196,10 @@ public class InputJobInfo implements Serializable {
     //Next object in the stream will be a byte array of partition information which is compressed
     ObjectInputStream pis = new ObjectInputStream(new ByteArrayInputStream(
             (byte[])ois.readObject()));
+    ObjectInputFilters.enableObjectFilterIfUnprotected(pis);
     ObjectInputStream partInfoReader =
         new ObjectInputStream(new InflaterInputStream(pis));
+    ObjectInputFilters.enableObjectFilterIfUnprotected(partInfoReader);
     partitions = (List<PartInfo>)partInfoReader.readObject();
     if (partitions != null) {
       for (PartInfo partInfo : partitions) {

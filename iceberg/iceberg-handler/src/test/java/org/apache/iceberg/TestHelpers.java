@@ -19,6 +19,7 @@
 
 package org.apache.iceberg;
 
+import io.github.pixee.security.ObjectInputFilters;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -80,6 +81,7 @@ public class TestHelpers {
 
     try (ObjectInputStream in = new ObjectInputStream(
         new ByteArrayInputStream(bytes.toByteArray()))) {
+      ObjectInputFilters.enableObjectFilterIfUnprotected(in);
       return (T) in.readObject();
     }
   }

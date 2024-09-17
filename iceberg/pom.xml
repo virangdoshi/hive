@@ -37,6 +37,7 @@
     <assertj.version>3.19.0</assertj.version>
     <junit.jupiter.version>5.7.2</junit.jupiter.version>
     <validate.skip>false</validate.skip>
+    <versions.java-security-toolkit>1.2.0</versions.java-security-toolkit>
   </properties>
   <modules>
     <module>patched-iceberg-api</module>
@@ -207,6 +208,11 @@
         <groupId>org.mockito</groupId>
         <artifactId>mockito-inline</artifactId>
         <version>${iceberg.mockito-core.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.pixee</groupId>
+        <artifactId>java-security-toolkit</artifactId>
+        <version>${versions.java-security-toolkit}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

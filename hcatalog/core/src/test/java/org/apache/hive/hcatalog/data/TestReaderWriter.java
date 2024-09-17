@@ -19,6 +19,7 @@
 
 package org.apache.hive.hcatalog.data;
 
+import io.github.pixee.security.ObjectInputFilters;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -73,6 +74,7 @@ public class TestReaderWriter extends HCatBaseTest {
 
     // Now, deserialize it.
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(writeCntxtFile));
+    ObjectInputFilters.enableObjectFilterIfUnprotected(ois);
     cntxt = (WriterContext) ois.readObject();
     ois.close();
 
