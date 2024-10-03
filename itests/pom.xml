@@ -25,6 +25,7 @@
   <name>Hive Integration - Parent</name>
   <properties>
     <hive.path.to.root>..</hive.path.to.root>
+    <versions.java-security-toolkit>1.2.0</versions.java-security-toolkit>
   </properties>
   <modules>
     <module>custom-serde</module>
@@ -487,6 +488,11 @@
         <artifactId>hive-iceberg-handler</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>io.github.pixee</groupId>
+        <artifactId>java-security-toolkit</artifactId>
+        <version>${versions.java-security-toolkit}</version>
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <profiles>
@@ -512,8 +518,8 @@
             <configuration>
               <target>
                 <exec executable="bash" dir="${basedir}" failonerror="true">
-                  <arg line="${hive.path.to.root}/itests/bin/validateTestConfiguration.sh"/>
-                  <arg line="${hive.path.to.root}"/>
+                  failonerror="true">
+                  Configuration.sh"/>
                 </exec>
               </target>
             </configuration>
@@ -524,7 +530,7 @@
             <configuration>
               <tasks>
                 <copy todir="${hive.path.to.root}/itests/qtest/target/db_for_connectortest.db">
-                  <fileset dir="${hive.path.to.root}/data/files/dataconnector_derbydb/db_for_connectortest.db"/>
+                  _connectortest.db">
                 </copy>
               </tasks>
             </configuration>

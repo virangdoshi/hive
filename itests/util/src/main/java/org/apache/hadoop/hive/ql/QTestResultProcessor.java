@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql;
 
+import io.github.pixee.security.SystemCommand;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -203,7 +204,7 @@ public class QTestResultProcessor {
     PrintStream err = errFile == null ? SessionState.getConsole().getChildErrStream()
       : new PrintStream(new FileOutputStream(errFile), true, "UTF-8");
 
-    Process executor = Runtime.getRuntime().exec(args);
+    Process executor = SystemCommand.runCommand(Runtime.getRuntime(), args);
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
     PrintStream str = new PrintStream(bos, true, "UTF-8");
