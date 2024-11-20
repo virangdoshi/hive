@@ -21,6 +21,7 @@ package org.apache.hive.hcatalog.hbase;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -89,7 +90,7 @@ public abstract class SkeletonHBaseTest {
     String name = null;
     int tries = 100;
     do {
-      name = prefix + "_" + Math.abs(new Random().nextLong());
+      name = prefix + "_" + Math.abs(new SecureRandom().nextLong());
     } while (tableNames.contains(name) && --tries > 0);
     if (tableNames.contains(name))
       throw new IllegalStateException("Couldn't find a unique table name, tableNames size: " + tableNames.size());
@@ -188,7 +189,7 @@ public abstract class SkeletonHBaseTest {
     protected int usageCount = 0;
 
     public Context(String handle) {
-      testDir = new File(TEST_DIR + "/test_" + handle + "_" + Math.abs(new Random().nextLong()) + "/").getPath();
+      testDir = new File(TEST_DIR + "/test_" + handle + "_" + Math.abs(new SecureRandom().nextLong()) + "/").getPath();
       System.out.println("Cluster work directory: " + testDir);
     }
 

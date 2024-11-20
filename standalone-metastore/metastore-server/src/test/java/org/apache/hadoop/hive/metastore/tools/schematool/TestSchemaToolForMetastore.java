@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URI;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -61,7 +62,7 @@ public class TestSchemaToolForMetastore {
   @Before
   public void setUp() throws HiveMetaException, IOException {
     testMetastoreDB = System.getProperty("java.io.tmpdir") +
-        File.separator + "test_metastore-" + new Random().nextInt();
+        File.separator + "test_metastore-" + new SecureRandom().nextInt();
     System.setProperty(ConfVars.CONNECT_URL_KEY.toString(),
         "jdbc:derby:" + testMetastoreDB + ";create=true");
     conf = MetastoreConf.newMetastoreConf();

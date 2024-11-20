@@ -18,6 +18,7 @@
 
 package org.apache.hive.service;
 
+import java.security.SecureRandom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -32,7 +33,7 @@ import org.junit.Test;
  *
  */
 public class TestCookieSigner {
-  private static final Random RAN = new Random();
+  private static final Random RAN = new SecureRandom();
 
   private CookieSigner cs;
 

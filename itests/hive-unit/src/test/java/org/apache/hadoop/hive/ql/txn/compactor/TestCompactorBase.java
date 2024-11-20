@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.txn.compactor;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hive.cli.CliSessionState;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -50,7 +51,7 @@ class TestCompactorBase {
 
   private static final Logger LOG = LoggerFactory.getLogger(TestCompactorBase.class);
 
-  private static final AtomicInteger salt = new AtomicInteger(new Random().nextInt());
+  private static final AtomicInteger salt = new AtomicInteger(new SecureRandom().nextInt());
   private final String TEST_DATA_DIR = HCatUtil.makePathASafeFileName(System.getProperty("java.io.tmpdir") +
       File.separator + TestCompactor.class.getCanonicalName() + "-" + System.currentTimeMillis() + "_" +
       salt.getAndIncrement());

@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;
 import org.apache.hadoop.hive.ql.exec.vector.ColumnVector;
@@ -50,7 +51,7 @@ public class TestVectorGenericDateExpressions {
   private Charset utf8 = StandardCharsets.UTF_8;
   private HiveConf hiveConf = new HiveConf();
   private int size = 200;
-  private Random random = new Random();
+  private Random random = new SecureRandom();
   private SimpleDateFormat formatter = getFormatter();
   private List<PrimitiveCategory> dateTimestampStringTypes =
       Arrays.<PrimitiveCategory>asList(PrimitiveCategory.DATE, PrimitiveCategory.TIMESTAMP, PrimitiveCategory.STRING);

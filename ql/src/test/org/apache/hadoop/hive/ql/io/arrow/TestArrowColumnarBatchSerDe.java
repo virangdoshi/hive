@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.io.arrow;
 
+import java.security.SecureRandom;
 import static org.apache.hadoop.hive.conf.HiveConf.ConfVars.HIVE_ARROW_BATCH_SIZE;
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
@@ -463,7 +464,7 @@ public class TestArrowColumnarBatchSerDe {
       final ArrowColumnarBatchSerDe serDe = new ArrowColumnarBatchSerDe();
       StructObjectInspector rowOI = initSerDe(serDe, schema);
 
-      final Random random = new Random();
+      final Random random = new SecureRandom();
       for (int j = 0; j < 1000; j++) {
         final int batchSize = random.nextInt(1000);
         final Object[][] integerRows = new Object[batchSize][];
@@ -671,7 +672,7 @@ public class TestArrowColumnarBatchSerDe {
 
     int size = 1000;
     Object[][] randomDecimals = new Object[size][];
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i < size; i++) {
       StringBuilder builder = new StringBuilder();
       builder.append(random.nextBoolean() ? '+' : '-');

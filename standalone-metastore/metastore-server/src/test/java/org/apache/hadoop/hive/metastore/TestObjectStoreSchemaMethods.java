@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.annotation.MetastoreCheckinTest;
 import org.apache.hadoop.hive.metastore.api.AlreadyExistsException;
@@ -577,7 +578,7 @@ public class TestObjectStoreSchemaMethods {
   }
 
   private static int dbNum = 1;
-  private static Random rand = new Random();
+  private static Random rand = new SecureRandom();
   private Database createUniqueDatabaseForTest() throws MetaException, InvalidObjectException {
     String catName;
     if (rand.nextDouble() < 0.5) {

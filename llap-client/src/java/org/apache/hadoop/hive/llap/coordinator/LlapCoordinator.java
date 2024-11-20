@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.llap.coordinator;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -91,7 +92,7 @@ public class LlapCoordinator {
     // TODO: if two HS2s start at exactly the same time, which could happen during a coordinated
     //       restart, they could start generating the same IDs. Should we store the startTime
     //       somewhere like ZK? Try to randomize it a bit for now...
-    long randomBits = (long)(new Random().nextInt()) << 32;
+    long randomBits = (long)(new SecureRandom().nextInt()) << 32;
     this.startTime = Math.abs((System.currentTimeMillis() & (long)Integer.MAX_VALUE) | randomBits);
   }
 

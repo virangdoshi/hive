@@ -21,6 +21,7 @@ package org.apache.hive.hcatalog.mapreduce;
 import java.io.File;
 import java.io.IOException;
 import java.security.Policy;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -81,7 +82,7 @@ public class TestHCatPartitionPublish {
   private static String testName;
 
   public static File handleWorkDir() throws IOException {
-    testName = "test_hcat_partitionpublish_" + Math.abs(new Random().nextLong());
+    testName = "test_hcat_partitionpublish_" + Math.abs(new SecureRandom().nextLong());
     String testDir = System.getProperty("test.data.dir", "./");
     testDir = testDir + "/" + testName + "/";
     File workDir = new File(new File(testDir).getCanonicalPath());

@@ -20,6 +20,7 @@
 package org.apache.hive.hcatalog.utils;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -92,7 +93,7 @@ public class StoreComplex {
     String outputTableName = null;
     outputTableName = COMPLEX_NOPART_EMPTY_INITIALLY_TABLE_NAME;
     // test with null or empty randomly
-    if (new Random().nextInt(2) == 0) {
+    if (new SecureRandom().nextInt(2) == 0) {
       System.err.println("INFO: output partition keys set to null for writing");
       outputPartitionKvps = null;
     }

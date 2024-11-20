@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.exec.repl.atlas;
 
 import com.sun.jersey.api.client.UniformInterfaceException;
+import java.security.SecureRandom;
 import org.apache.atlas.AtlasServiceException;
 import org.apache.hadoop.hive.ql.ErrorMsg;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
@@ -76,7 +77,7 @@ public class RetryingClientTimeBased {
 
     currentDelay *= this.backOff;
     if (this.maxJitterInSeconds > 0) {
-      currentDelay += new Random().nextInt(this.maxJitterInSeconds);
+      currentDelay += new SecureRandom().nextInt(this.maxJitterInSeconds);
     }
 
     if (currentDelay > this.maxRetryDelayInSeconds) {

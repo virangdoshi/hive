@@ -21,6 +21,7 @@ package org.apache.hive.hcatalog.api;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.Policy;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -453,7 +454,7 @@ public class TestHCatClient {
     HCatClient client = HCatClient.create(new Configuration(hcatConf));
     boolean isExceptionCaught = false;
     // Table creation with a long table name causes ConnectionFailureException
-    final String tableName = "Temptable" + new BigInteger(260, new Random()).toString(2);
+    final String tableName = "Temptable" + new BigInteger(260, new SecureRandom()).toString(2);
 
     ArrayList<HCatFieldSchema> cols = new ArrayList<HCatFieldSchema>();
     cols.add(new HCatFieldSchema("id", Type.INT, "id columns"));

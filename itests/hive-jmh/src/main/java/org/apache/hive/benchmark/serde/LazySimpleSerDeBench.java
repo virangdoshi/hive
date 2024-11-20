@@ -16,6 +16,7 @@ package org.apache.hive.benchmark.serde;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -94,7 +95,7 @@ public class LazySimpleSerDeBench {
     @Override
     public void setup() {
       int len = 0;
-      Random r = new Random();
+      Random r = new SecureRandom();
       for (int i = 0; i < sizes.length; i++) {
         sizes[i] = (int) (r.nextInt(width));
         offsets[i] = len;
@@ -119,7 +120,7 @@ public class LazySimpleSerDeBench {
       sizes = new int[1024];
       offsets = new int[sizes.length];
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      Random r = new Random();
+      Random r = new SecureRandom();
       int len = 0;
       for (int i = 0; i < sizes.length / 2; i++) {
         int p = r.nextInt(max);
@@ -491,7 +492,7 @@ public class LazySimpleSerDeBench {
       sizes = new int[DEFAULT_DATA_SIZE];
       offsets = new int[sizes.length];
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      Random r = new Random();
+      Random r = new SecureRandom();
       int len = 0;
       final long base = -320000000L*1000L; // 1959
       for (int i = 0; i < DEFAULT_DATA_SIZE; i++) {
@@ -574,7 +575,7 @@ public class LazySimpleSerDeBench {
       sizes = new int[DEFAULT_DATA_SIZE];
       offsets = new int[sizes.length];
       ByteArrayOutputStream bos = new ByteArrayOutputStream();
-      Random r = new Random();
+      Random r = new SecureRandom();
       int len = 0;
       final long base = -320000000L * 1000L; // 1959
       for (int i = 0; i < DEFAULT_DATA_SIZE; i++) {

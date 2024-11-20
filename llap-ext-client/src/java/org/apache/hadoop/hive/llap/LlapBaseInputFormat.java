@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.security.SecureRandom;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -105,7 +106,7 @@ public class LlapBaseInputFormat<V extends WritableComparable<?>>
   private boolean useArrow;
   private long arrowAllocatorLimit;
   private BufferAllocator allocator;
-  private final Random rand = new Random();
+  private final Random rand = new SecureRandom();
 
   public static final String URL_KEY = "llap.if.hs2.connection";
   public static final String QUERY_KEY = "llap.if.query";

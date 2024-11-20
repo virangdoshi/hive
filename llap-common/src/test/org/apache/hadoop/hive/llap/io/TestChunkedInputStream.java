@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -36,7 +37,7 @@ import static org.junit.Assert.*;
 public class TestChunkedInputStream {
 
   static int bufferSize = 128;
-  static Random rand = new Random();
+  static Random rand = new SecureRandom();
   static String alphabet = "abcdefghijklmnopqrstuvwxyz";
 
   static class StreamTester {

@@ -14,6 +14,7 @@
 
 package org.apache.hive.benchmark.storage;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -193,7 +194,7 @@ public class ColumnarStorageBench {
   }
 
   private Writable getPrimitiveWritable(final PrimitiveTypeInfo typeInfo) {
-    Random rand = new Random();
+    Random rand = new SecureRandom();
 
     switch (typeInfo.getPrimitiveCategory()) {
       case INT:

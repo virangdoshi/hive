@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.pig;
 
+import java.security.SecureRandom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -81,7 +82,7 @@ import org.slf4j.LoggerFactory;
 @RunWith(Parameterized.class)
 public class TestHCatLoaderEncryption {
 
-  private static final AtomicInteger salt = new AtomicInteger(new Random().nextInt());
+  private static final AtomicInteger salt = new AtomicInteger(new SecureRandom().nextInt());
   private static final Logger LOG = LoggerFactory.getLogger(TestHCatLoaderEncryption.class);
   private final String TEST_DATA_DIR = HCatUtil.makePathASafeFileName(System.getProperty
       ("java.io.tmpdir") + File.separator + TestHCatLoaderEncryption.class.getCanonicalName() + "-" +

@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore.conf;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.hive.metastore.annotation.MetastoreUnitTest;
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars;
 import org.apache.hadoop.conf.Configuration;
@@ -57,7 +58,7 @@ public class TestMetastoreConf {
   private static final Logger LOG = LoggerFactory.getLogger(TestMetastoreConf.class);
 
   private Configuration conf;
-  private Random rand = new Random();
+  private Random rand = new SecureRandom();
 
   @After
   public void unsetProperties() {

@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.llap.registry.impl;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
+import java.security.SecureRandom;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.api.BackgroundCallback;
 import org.apache.curator.framework.api.CuratorEvent;
@@ -58,7 +59,7 @@ public class SlotZnode implements Closeable {
   private final AtomicReference<CountDownLatch> initialCreateLatch =
       new AtomicReference<CountDownLatch>(new CountDownLatch(1));
   private final AtomicReference<String> nodePath = new AtomicReference<String>(null);
-  private final Random rdm = new Random();
+  private final Random rdm = new SecureRandom();
   private final CuratorFramework client;
   private final String basePath, prefix, workerPrefix, dataStr;
   private final byte[] data;

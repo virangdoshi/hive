@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.llap.shufflehandler;
 import java.io.DataOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedOutputStream;
@@ -56,7 +57,7 @@ public class TestIndexCache {
 
   @Test
   public void testLRCPolicy() throws Exception {
-    Random r = new Random();
+    Random r = new SecureRandom();
     long seed = r.nextLong();
     r.setSeed(seed);
     System.out.println("seed: " + seed);

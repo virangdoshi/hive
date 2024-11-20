@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.llap.cache;
 
+import java.security.SecureRandom;
 import static org.apache.hadoop.hive.llap.cache.LlapCacheableBuffer.INVALIDATE_OK;
 import static org.junit.Assert.*;
 
@@ -121,7 +122,7 @@ public class TestOrcMetadataCache {
     final BuddyAllocator alloc = new BuddyAllocator(false, false, 8, MAX_ALLOC, 1, 4096, 0, null, mm, metrics, null, true);
     final MetadataCache cache = new MetadataCache(alloc, mm, cp, true, metrics);
     final Object fileKey1 = new Object();
-    final Random rdm = new Random();
+    final Random rdm = new SecureRandom();
     final ByteBuffer smallBuffer = ByteBuffer.allocate(2 * MAX_ALLOC);
     rdm.nextBytes(smallBuffer.array());
     //put some metadata in the cache that needs multiple buffers (2 * MAX_ALLOC)
@@ -146,7 +147,7 @@ public class TestOrcMetadataCache {
         false, false, 8, MAX_ALLOC, 1, 4096, 0, null, mm, metrics, null, true);
     MetadataCache cache = new MetadataCache(alloc, mm, cp, true, metrics);
     Object fileKey1 = new Object();
-    Random rdm = new Random();
+    Random rdm = new SecureRandom();
 
     ByteBuffer smallBuffer = ByteBuffer.allocate(MAX_ALLOC - 1);
     rdm.nextBytes(smallBuffer.array());

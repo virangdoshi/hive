@@ -13,6 +13,7 @@
  */
 package org.apache.hive.benchmark.vectorization;
 
+import java.security.SecureRandom;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -70,7 +71,7 @@ public abstract class AbstractExpression {
 
   protected LongColumnVector getLongColumnVector() {
     LongColumnVector columnVector = new LongColumnVector(VectorizedRowBatch.DEFAULT_SIZE);
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i != VectorizedRowBatch.DEFAULT_SIZE; i++) {
       columnVector.vector[i] = random.nextLong();
     }
@@ -86,7 +87,7 @@ public abstract class AbstractExpression {
   protected LongColumnVector getLongColumnVectorWithNull() {
     LongColumnVector columnVector = new LongColumnVector(VectorizedRowBatch.DEFAULT_SIZE);
     columnVector.noNulls = false;
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i != VectorizedRowBatch.DEFAULT_SIZE; i++) {
       if (i % 100 == 0) {
         columnVector.isNull[i] = true;
@@ -98,7 +99,7 @@ public abstract class AbstractExpression {
 
   protected LongColumnVector getBooleanLongColumnVector() {
     LongColumnVector columnVector = new LongColumnVector(VectorizedRowBatch.DEFAULT_SIZE);
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i != VectorizedRowBatch.DEFAULT_SIZE; i++) {
       columnVector.vector[i] = random.nextInt(2);
     }
@@ -114,7 +115,7 @@ public abstract class AbstractExpression {
   protected LongColumnVector getBooleanLongColumnVectorWithNull() {
     LongColumnVector columnVector = new LongColumnVector(VectorizedRowBatch.DEFAULT_SIZE);
     columnVector.noNulls = false;
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i != VectorizedRowBatch.DEFAULT_SIZE; i++) {
       if (i % 100 == 0) {
         columnVector.isNull[i] = true;
@@ -126,7 +127,7 @@ public abstract class AbstractExpression {
 
   protected DoubleColumnVector getDoubleColumnVector() {
     DoubleColumnVector columnVector = new DoubleColumnVector(VectorizedRowBatch.DEFAULT_SIZE);
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i != VectorizedRowBatch.DEFAULT_SIZE; i++) {
       columnVector.vector[i] = random.nextDouble();
     }
@@ -142,7 +143,7 @@ public abstract class AbstractExpression {
   protected DoubleColumnVector getDoubleColumnVectorWithNull() {
     DoubleColumnVector columnVector = new DoubleColumnVector(VectorizedRowBatch.DEFAULT_SIZE);
     columnVector.noNulls = false;
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i != VectorizedRowBatch.DEFAULT_SIZE; i++) {
       if (i % 100 == 0) {
         columnVector.isNull[i] = true;
@@ -154,7 +155,7 @@ public abstract class AbstractExpression {
 
   protected BytesColumnVector getBytesColumnVector() {
     BytesColumnVector columnVector = new BytesColumnVector(VectorizedRowBatch.DEFAULT_SIZE);
-    Random random = new Random();
+    Random random = new SecureRandom();
     int length = 16;
     for (int i = 0; i != VectorizedRowBatch.DEFAULT_SIZE; i++) {
       columnVector.vector[i] = new byte[length];

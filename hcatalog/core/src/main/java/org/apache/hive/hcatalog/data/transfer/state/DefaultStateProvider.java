@@ -19,6 +19,7 @@
 
 package org.apache.hive.hcatalog.data.transfer.state;
 
+import java.security.SecureRandom;
 import java.text.NumberFormat;
 import java.util.Random;
 
@@ -34,7 +35,7 @@ public class DefaultStateProvider implements StateProvider {
     numberFormat.setMinimumIntegerDigits(5);
     numberFormat.setGroupingUsed(false);
     return Integer
-      .parseInt(numberFormat.format(Math.abs(new Random().nextInt())));
+      .parseInt(numberFormat.format(Math.abs(new SecureRandom().nextInt())));
   }
 
   private static StateProvider sp;

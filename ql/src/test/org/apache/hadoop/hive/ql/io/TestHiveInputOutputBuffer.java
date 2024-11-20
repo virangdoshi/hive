@@ -19,6 +19,7 @@ package org.apache.hadoop.hive.ql.io;
 
 import java.io.DataOutput;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Random;
 
 import static org.junit.Assert.assertEquals;
@@ -205,7 +206,7 @@ public class TestHiveInputOutputBuffer {
   @Test
   public void testBaseBuffers() throws IOException {
     NonSyncDataOutputBuffer dob = new NonSyncDataOutputBuffer();
-    final Random r = new Random();
+    final Random r = new SecureRandom();
     final long seed = 0x0123456789ABCDEFL; // hardcoded for reproducibility.
     r.setSeed(seed);
     System.out.println("SEED: " + seed);

@@ -18,6 +18,7 @@
 
 package org.apache.hive.common.util;
 
+import java.security.SecureRandom;
 import static org.junit.Assert.*;
 import org.apache.hive.common.util.Murmur3.IncrementalHash32;
 
@@ -287,7 +288,7 @@ public class TestMurmur3 {
   @Test
   public void testTwoLongRandom() {
     ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES * 2);
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (long i = 0; i < 1000; i++) {
       for (long j = 0; j < 1000; j++) {
         long x = random.nextLong();
@@ -311,7 +312,7 @@ public class TestMurmur3 {
   @Test
   public void testSingleLongRandom() {
     ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (long i = 0; i < 1000; i++) {
       long x = random.nextLong();
       buffer.putLong(0, x);

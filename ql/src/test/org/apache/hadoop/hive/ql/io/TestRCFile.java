@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.io;
 
+import java.security.SecureRandom;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -342,7 +343,7 @@ public class TestRCFile {
         new DefaultCodec());
     BytesRefArrayWritable bytes = new BytesRefArrayWritable(record.length);
     final int recCount = 100;
-    Random rand = new Random();
+    Random rand = new SecureRandom();
     for (int recIdx = 0; recIdx < recCount; recIdx++) {
       for (int i = 0; i < record.length; i++) {
         record[i] = String.valueOf(rand.nextInt()).getBytes(StandardCharsets.UTF_8);

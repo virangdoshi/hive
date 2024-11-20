@@ -13,6 +13,7 @@
  */
 package org.apache.hadoop.hive.serde2.lazy.fast;
 
+import java.security.SecureRandom;
 import org.junit.Test;
 
 import java.util.Random;
@@ -24,7 +25,7 @@ public class TestStringToDouble {
 
   @Test
   public void testFullRandom() throws Exception {
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i < iter; i++) {
       double d = Double.longBitsToDouble(random.nextLong());
       String s = Double.toString(d);
@@ -35,7 +36,7 @@ public class TestStringToDouble {
 
   @Test
   public void testRandomBetween0And1() throws Exception {
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i < iter; i++) {
       for (int j = 1; j < 18; j++) {
         StringBuilder builder = new StringBuilder("0.1");
@@ -52,7 +53,7 @@ public class TestStringToDouble {
 
   @Test
   public void testRandomInteger() throws Exception {
-    Random random = new Random();
+    Random random = new SecureRandom();
     for (int i = 0; i < iter; i++) {
       for (int j = 1; j < 18; j++) {
         StringBuilder builder = new StringBuilder();

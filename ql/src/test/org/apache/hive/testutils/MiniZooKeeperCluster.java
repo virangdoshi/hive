@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.net.BindException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -149,7 +150,7 @@ public class MiniZooKeeperCluster {
       if (defaultClientPort > 0) {
         returnClientPort = defaultClientPort;
       } else {
-        returnClientPort = 0xc000 + new Random().nextInt(0x3f00);
+        returnClientPort = 0xc000 + new SecureRandom().nextInt(0x3f00);
       }
     }
     // Make sure that the port is unused.

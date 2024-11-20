@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.annotation.MetastoreCheckinTest;
 import org.apache.hadoop.hive.metastore.api.AggrStats;
@@ -353,7 +354,7 @@ public class TestStats {
     final String colName;
     final String colType;
 
-    Random rand = new Random();
+    Random rand = new SecureRandom();
 
     List<Long> maxLens, numNulls, numDvs;
     List<Double> avgLens;

@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.vector;
 
+import java.security.SecureRandom;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.Timestamp;
@@ -128,7 +129,7 @@ public class TestTimestampColumnVector {
    */
   @Test
   public void testProlepticCalendar() {
-    int randomMillis = new Random().nextInt(24 * 60 * 60 * 1000 - 1);
+    int randomMillis = new SecureRandom().nextInt(24 * 60 * 60 * 1000 - 1);
 
     // from hybrid internal representation to proleptic
     setAndVerifyProlepticUpdate(getMillisForDayPlusMillis(16768, randomMillis),
@@ -185,7 +186,7 @@ public class TestTimestampColumnVector {
 
     Instant instant = Instant.ofEpochMilli(epochMilli); // instant is always a moment in UTC
 
-    int nanos = instant.getNano() + new Random().nextInt(999999) + 0;
+    int nanos = instant.getNano() + new SecureRandom().nextInt(999999) + 0;
     TimestampColumnVector timestampColVector =
         new TimestampColumnVector().setUsingProlepticCalendar(originalUseProleptic);
 

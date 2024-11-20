@@ -22,6 +22,7 @@ package org.apache.hive.hcatalog.mapreduce;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -148,7 +149,7 @@ public class TestHCatMultiOutputFormat {
   public static void setup() throws Exception {
     System.clearProperty("mapred.job.tracker");
     String testDir = System.getProperty("test.tmp.dir", "./");
-    testDir = testDir + "/test_multitable_" + Math.abs(new Random().nextLong()) + "/";
+    testDir = testDir + "/test_multitable_" + Math.abs(new SecureRandom().nextLong()) + "/";
     workDir = new File(new File(testDir).getCanonicalPath());
     FileUtil.fullyDelete(workDir);
     workDir.mkdirs();

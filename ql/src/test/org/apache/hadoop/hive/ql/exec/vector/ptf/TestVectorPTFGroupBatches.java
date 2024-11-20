@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.exec.vector.ptf;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicLong;
@@ -536,7 +537,7 @@ public class TestVectorPTFGroupBatches {
     VectorPTFGroupBatches groupBatches = new VectorPTFGroupBatches(hconf, numberOfBufferedBatches);
 
     AtomicLong rowindex = new AtomicLong(-1);
-    Random random = new Random();
+    Random random = new SecureRandom();
     int allSize = 0;
     init(groupBatches);
 

@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -85,7 +86,7 @@ public class TestMultiOutputFormat {
 
   private static void createWorkDir() throws IOException {
     String testDir = System.getProperty("test.tmp.dir", "./");
-    testDir = testDir + "/test_multiout_" + Math.abs(new Random().nextLong()) + "/";
+    testDir = testDir + "/test_multiout_" + Math.abs(new SecureRandom().nextLong()) + "/";
     workDir = new File(new File(testDir).getCanonicalPath());
     FileUtil.fullyDelete(workDir);
     workDir.mkdirs();

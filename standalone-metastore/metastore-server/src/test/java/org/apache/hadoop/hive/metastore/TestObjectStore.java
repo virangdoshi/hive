@@ -21,6 +21,7 @@ import com.codahale.metrics.Counter;
 import com.google.common.base.Supplier;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import java.security.SecureRandom;
 import org.apache.hadoop.hive.metastore.ObjectStore.RetryingExecutor;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.annotation.MetastoreUnitTest;
@@ -1186,7 +1187,7 @@ public class TestObjectStore {
     ExecutorService executor = newFixedThreadPool(numThreads);
     List<Future<Void>> results = new ArrayList<>(numThreads);
     for (int i = 0; i < numThreads; i++) {
-      final Random random = new Random();
+      final Random random = new SecureRandom();
       Configuration conf = MetastoreConf.newMetastoreConf();
       // DN class initialization can reach a deadlock situation
       // in case the one holding the write lock doesn't get a connection from the CP manager

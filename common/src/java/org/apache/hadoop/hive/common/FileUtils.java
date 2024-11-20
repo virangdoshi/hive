@@ -28,6 +28,7 @@ import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
 import java.security.AccessControlException;
 import java.security.PrivilegedExceptionAction;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
@@ -75,7 +76,7 @@ import javax.security.auth.login.LoginException;
  */
 public final class FileUtils {
   private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class.getName());
-  private static final Random random = new Random();
+  private static final Random random = new SecureRandom();
   public static final int IO_ERROR_SLEEP_TIME = 100;
 
   public static final PathFilter HIDDEN_FILES_PATH_FILTER = new PathFilter() {

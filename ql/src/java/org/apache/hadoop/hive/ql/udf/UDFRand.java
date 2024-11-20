@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.udf;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 import org.apache.hadoop.hive.ql.exec.Description;
@@ -46,7 +47,7 @@ public class UDFRand extends UDF {
 
   public DoubleWritable evaluate() {
     if (random == null) {
-      random = new Random();
+      random = new SecureRandom();
     }
     result.set(random.nextDouble());
     return result;

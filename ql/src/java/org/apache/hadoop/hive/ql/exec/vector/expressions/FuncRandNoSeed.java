@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.expressions;
 
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -36,7 +37,7 @@ public class FuncRandNoSeed extends VectorExpression {
 
   public FuncRandNoSeed(int outputColumnNum) {
     super(-1, outputColumnNum);
-    random = new Random();
+    random = new SecureRandom();
   }
 
   public FuncRandNoSeed() {

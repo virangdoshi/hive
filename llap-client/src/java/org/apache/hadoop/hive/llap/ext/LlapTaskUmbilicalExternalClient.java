@@ -16,6 +16,7 @@
  */
 package org.apache.hadoop.hive.llap.ext;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.io.Writable;
 
 import java.util.HashSet;
@@ -79,7 +80,7 @@ public class LlapTaskUmbilicalExternalClient implements Closeable {
 
   private static ScheduledThreadPoolExecutor retryExecutor = new ScheduledThreadPoolExecutor(1);
 
-  private final Random rand = new Random();
+  private final Random rand = new SecureRandom();
   private final LlapProtocolClientProxy communicator;
   private volatile LlapTaskUmbilicalServer llapTaskUmbilicalServer;
   private final Configuration conf;

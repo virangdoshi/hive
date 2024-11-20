@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.vector;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 import org.junit.Assert;
@@ -106,7 +107,7 @@ public class TestVectorizedRowBatch {
    */
   public static void addRandomNulls(ColumnVector col) {
     col.noNulls = false;
-    Random rand = new Random();
+    Random rand = new SecureRandom();
     for(int i = 0; i != col.isNull.length; i++) {
       col.isNull[i] = Math.abs(rand.nextInt() % 11) == 0;
     }
@@ -208,7 +209,7 @@ public class TestVectorizedRowBatch {
    */
   public static void setRandomDoubleCol(DoubleColumnVector col) {
     int size = col.vector.length;
-    Random rand = new Random();
+    Random rand = new SecureRandom();
     for(int i = 0; i != size; i++) {
       col.vector[i] = Math.abs(rand.nextInt() % 100);
     }

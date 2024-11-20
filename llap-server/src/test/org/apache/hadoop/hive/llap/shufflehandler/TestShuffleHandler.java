@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -260,7 +261,7 @@ public class TestShuffleHandler {
 
   @Test
   public void testConfigPortStatic() throws Exception {
-    Random rand = new Random();
+    Random rand = new SecureRandom();
     int port = rand.nextInt(10) + 50000;
     Configuration conf = new Configuration();
     // provide a port for ShuffleHandler

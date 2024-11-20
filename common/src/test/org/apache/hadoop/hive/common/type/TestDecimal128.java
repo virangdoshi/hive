@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.common.type;
 
+import java.security.SecureRandom;
 import static org.junit.Assert.*;
 
 import java.math.BigDecimal;
@@ -472,7 +473,7 @@ public class TestDecimal128 {
     Decimal128 a, b, r;
     String sA, sB;
 
-    Random rand = new Random();
+    Random rand = new SecureRandom();
     int aDigits = rand.nextInt(37) + 1; // number of digits in a (1..37)
     int bDigits = 38 - aDigits;         // number of digits in b (1..37)
     assertTrue(aDigits + bDigits == 38 && aDigits > 0 && bDigits > 0);
@@ -559,7 +560,7 @@ public class TestDecimal128 {
     Decimal128 a, b, r;
     String sA, sB;
 
-    Random rand = new Random();
+    Random rand = new SecureRandom();
     int aDigits = rand.nextInt(37) + 1; // number of digits in a (1..37)
     int bDigits = 38 - aDigits;         // number of digits in b (1..37)
     int temp;
@@ -609,7 +610,7 @@ public class TestDecimal128 {
    * negative or positive.
    */
   private String makeNumericString(int length) {
-    Random r = new Random();
+    Random r = new SecureRandom();
     StringBuilder b = new StringBuilder();
     for(int i = 0; i < length; i++) {
       b.append(r.nextInt(10));

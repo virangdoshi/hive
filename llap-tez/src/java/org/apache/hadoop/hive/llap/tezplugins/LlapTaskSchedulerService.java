@@ -15,6 +15,7 @@
 package org.apache.hadoop.hive.llap.tezplugins;
 
 import com.google.common.io.ByteArrayDataOutput;
+import java.security.SecureRandom;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -305,7 +306,7 @@ public class LlapTaskSchedulerService extends TaskScheduler {
 
   private final LlapTaskSchedulerMetrics metrics;
   private final JvmPauseMonitor pauseMonitor;
-  private final Random random = new Random();
+  private final Random random = new SecureRandom();
 
   private int totalGuaranteed = 0, unusedGuaranteed = 0;
 

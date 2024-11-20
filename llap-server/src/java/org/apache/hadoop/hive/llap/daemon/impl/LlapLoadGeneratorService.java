@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.llap.daemon.impl;
 
 import com.google.common.annotations.VisibleForTesting;
+import java.security.SecureRandom;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.service.AbstractService;
@@ -65,7 +66,7 @@ public class LlapLoadGeneratorService extends AbstractService {
       if (hostName.equalsIgnoreCase(localHostName)) {
         LOG.debug("Starting load generator process on: {}", localHostName);
         threads = new Thread[Runtime.getRuntime().availableProcessors()];
-        Random random = new Random();
+        Random random = new SecureRandom();
         for (int i = 0; i < threads.length; i++) {
           threads[i] = new Thread(new Runnable() {
             @Override

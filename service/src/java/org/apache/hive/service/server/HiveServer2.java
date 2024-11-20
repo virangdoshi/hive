@@ -20,6 +20,7 @@ package org.apache.hive.service.server;
 
 import com.google.common.base.Joiner;
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -1099,7 +1100,7 @@ public class HiveServer2 extends CompositeService {
         // Schedule task to cleanup dangling scratch dir periodically,
         // initial wait for a random time between 0-10 min to
         // avoid intial spike when using multiple HS2
-        scheduleClearDanglingScratchDir(hiveConf, new Random().nextInt(600));
+        scheduleClearDanglingScratchDir(hiveConf, new SecureRandom().nextInt(600));
 
         server = new HiveServer2();
         server.init(hiveConf);

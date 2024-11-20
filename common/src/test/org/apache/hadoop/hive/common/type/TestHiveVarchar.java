@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.common.type;
 
 
+import java.security.SecureRandom;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -40,7 +41,7 @@ public class TestHiveVarchar {
     super();
   }
 
-  static Random rnd = new Random();
+  static Random rnd = new SecureRandom();
 
   public static int getRandomSupplementaryChar() {
     int lowSurrogate = 0xDC00 + rnd.nextInt(1024);

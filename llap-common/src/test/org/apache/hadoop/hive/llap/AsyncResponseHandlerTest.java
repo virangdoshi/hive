@@ -15,6 +15,7 @@
 package org.apache.hadoop.hive.llap;
 
 import com.google.protobuf.Message;
+import java.security.SecureRandom;
 import org.apache.hadoop.hive.llap.AsyncPbRpcProxy.ExecuteRequestCallback;
 import org.apache.hadoop.util.concurrent.AsyncGet;
 import org.junit.After;
@@ -115,7 +116,7 @@ public class AsyncResponseHandlerTest {
     Thread ackerThread = new Thread(new Runnable() {
       @Override
       public void run() {
-        Random random = new Random();
+        Random random = new SecureRandom();
         int[] ackOrder = new int[totalCallbacks];
         for (int i = 0; i < totalCallbacks; i++) {
           ackOrder[i] = i;

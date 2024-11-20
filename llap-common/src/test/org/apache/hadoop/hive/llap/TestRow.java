@@ -17,6 +17,7 @@
 
 package org.apache.hadoop.hive.llap;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -39,7 +40,7 @@ public class TestRow {
     Schema schema = createTestSchema();
     Row row = new Row(schema);
 
-    Random rand = new Random();
+    Random rand = new SecureRandom();
     int iterations = 100;
     for (int idx = 0; idx < iterations; ++idx) {
       // Set the row values

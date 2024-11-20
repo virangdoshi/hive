@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.common.type;
 
+import java.security.SecureRandom;
 import java.util.Random;
 
 
@@ -29,7 +30,7 @@ import org.junit.Test;
  * HiveBaseChar Test.
  */
 public class TestHiveBaseChar {
-  static Random rnd = new Random();
+  static Random rnd = new SecureRandom();
 
   public static int getRandomSupplementaryChar() {
     int lowSurrogate = 0xDC00 + rnd.nextInt(1024);

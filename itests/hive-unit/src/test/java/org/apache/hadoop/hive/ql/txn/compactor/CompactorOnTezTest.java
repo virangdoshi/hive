@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.txn.compactor;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hive.cli.CliSessionState;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -60,7 +61,7 @@ import static org.apache.hadoop.hive.ql.txn.compactor.TestCompactor.executeState
  * Superclass for Test[Crud|Mm]CompactorOnTez, for setup and helper classes.
  */
 public abstract class CompactorOnTezTest {
-  private static final AtomicInteger RANDOM_INT = new AtomicInteger(new Random().nextInt());
+  private static final AtomicInteger RANDOM_INT = new AtomicInteger(new SecureRandom().nextInt());
   private static final String TEST_DATA_DIR = new File(
       System.getProperty("java.io.tmpdir") + File.separator + TestCrudCompactorOnTez.class
           .getCanonicalName() + "-" + System.currentTimeMillis() + "_" + RANDOM_INT

@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.vector.util.batchgen;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.hive.ql.exec.vector.VectorBatchDebug;
 import org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;
 import org.apache.hadoop.hive.ql.exec.vector.util.batchgen.VectorBatchGenerator;
@@ -37,7 +38,7 @@ public class TestVectorBatchGenerate {
 
     VectorizedRowBatch batch = generator.createBatch();
 
-    Random random = new Random();
+    Random random = new SecureRandom();
     generator.generateBatch(batch, random, VectorizedRowBatch.DEFAULT_SIZE);
     VectorBatchDebug.debugDisplayBatch(batch, "testTryIt");
   }
@@ -50,7 +51,7 @@ public class TestVectorBatchGenerate {
 
     VectorizedRowBatch batch = generator.createBatch();
 
-    Random random = new Random();
+    Random random = new SecureRandom();
     generator.generateBatch(batch, random, VectorizedRowBatch.DEFAULT_SIZE);
     VectorBatchDebug.debugDisplayBatch(batch, "testTryIt2");
   }

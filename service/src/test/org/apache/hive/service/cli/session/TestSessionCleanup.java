@@ -20,6 +20,7 @@ package org.apache.hive.service.cli.session;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -42,7 +43,7 @@ import org.junit.Test;
  */
 public class TestSessionCleanup {
 
-  private static final AtomicInteger salt = new AtomicInteger(new Random().nextInt());
+  private static final AtomicInteger salt = new AtomicInteger(new SecureRandom().nextInt());
   private final String TEST_DATA_DIR = System.getProperty("java.io.tmpdir") + File.separator +
       TestSessionCleanup.class.getCanonicalName() + "-" + System.currentTimeMillis() + "_" + salt.getAndIncrement();
 

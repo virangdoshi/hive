@@ -21,6 +21,7 @@ package org.apache.hadoop.hive.ql;
 import java.io.DataInput;
 import java.io.IOException;
 import java.net.URI;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -1060,7 +1061,7 @@ public class Context {
    * In the future, users can use the executionId to resume a query.
    */
   public static String generateExecutionId() {
-    Random rand = new Random();
+    Random rand = new SecureRandom();
     SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_SSS");
     String executionId = "hive_" + format.format(new Date()) + "_"
         + Math.abs(rand.nextLong());

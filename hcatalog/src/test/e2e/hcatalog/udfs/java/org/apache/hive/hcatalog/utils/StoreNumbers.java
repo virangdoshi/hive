@@ -20,6 +20,7 @@
 package org.apache.hive.hcatalog.utils;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -166,7 +167,7 @@ public class StoreNumbers {
         outputTableName = NUMBERS_NON_PARTITIONED_TABLE_NAME;
       }
       // test with null or empty randomly
-      if (new Random().nextInt(2) == 0) {
+      if (new SecureRandom().nextInt(2) == 0) {
         outputPartitionKvps = null;
       }
     }

@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.tez;
 
+import java.security.SecureRandom;
 import java.util.Comparator;
 import java.util.Random;
 import java.util.concurrent.BlockingQueue;
@@ -33,7 +34,7 @@ import org.slf4j.LoggerFactory;
 
 class SessionExpirationTracker {
   private static final Logger LOG = LoggerFactory.getLogger(SessionExpirationTracker.class);
-  private static final Random rdm = new Random();
+  private static final Random rdm = new SecureRandom();
 
   /** Priority queue sorted by expiration time of live sessions that could be expired. */
   private final PriorityBlockingQueue<TezSessionPoolSession> expirationQueue;

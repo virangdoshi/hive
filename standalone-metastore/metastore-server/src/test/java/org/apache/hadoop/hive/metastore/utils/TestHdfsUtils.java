@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore.utils;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -48,7 +49,7 @@ import static org.mockito.Mockito.when;
 @Category(MetastoreUnitTest.class)
 public class TestHdfsUtils {
 
-  private Random rand = new Random();
+  private Random rand = new SecureRandom();
 
   private Path createFile(FileSystem fs, FsPermission perms) throws IOException {
     StringBuilder buf = new StringBuilder();

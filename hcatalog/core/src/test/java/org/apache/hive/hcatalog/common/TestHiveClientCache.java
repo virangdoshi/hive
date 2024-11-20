@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.common;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.HiveMetaStore;
 import org.apache.hadoop.hive.metastore.IMetaStoreClient;
@@ -183,7 +184,7 @@ public class TestHiveClientCache {
     assertTrue(client.isOpen());
 
     final String DB_NAME = "test_db";
-    final String LONG_TABLE_NAME = "long_table_name_" + new BigInteger(200, new Random()).toString(2);
+    final String LONG_TABLE_NAME = "long_table_name_" + new BigInteger(200, new SecureRandom()).toString(2);
 
     try {
       client.dropTable(DB_NAME, LONG_TABLE_NAME);

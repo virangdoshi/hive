@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.util;
 
+import java.security.SecureRandom;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.utils.SecurityUtils;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -115,7 +116,7 @@ public class Retryable {
     }
     currentDelay *= this.backOff;
     if (this.maxJitterInSeconds > 0) {
-      currentDelay += new Random().nextInt(this.maxJitterInSeconds);
+      currentDelay += new SecureRandom().nextInt(this.maxJitterInSeconds);
     }
     if (currentDelay > this.maxRetryDelayInSeconds) {
       currentDelay = this.maxRetryDelayInSeconds;
