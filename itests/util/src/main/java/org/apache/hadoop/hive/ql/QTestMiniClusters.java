@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -273,7 +275,7 @@ public class QTestMiniClusters {
     if (clusterType.getCoreClusterType() == CoreClusterType.TEZ) {
       if (confDir != null && !confDir.isEmpty()) {
         conf.addResource(
-            new URL("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml"));
+            Urls.create("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
       }
       int numTrackers = 2;
       if (EnumSet

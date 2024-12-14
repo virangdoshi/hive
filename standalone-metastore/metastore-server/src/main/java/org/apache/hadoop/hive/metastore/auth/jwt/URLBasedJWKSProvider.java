@@ -23,6 +23,8 @@ import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKMatcher;
 import com.nimbusds.jose.jwk.JWKSelector;
 import com.nimbusds.jose.jwk.JWKSet;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf.ConfVars;
@@ -63,7 +65,7 @@ public class URLBasedJWKSProvider {
     }
     String[] jwksURLs = jwksURL.split(",");
     for (String urlString : jwksURLs) {
-      URL url = new URL(urlString);
+      URL url = Urls.create(urlString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       jwkSets.add(JWKSet.load(url));
       LOG.info("Loaded JWKS from " + urlString);
     }

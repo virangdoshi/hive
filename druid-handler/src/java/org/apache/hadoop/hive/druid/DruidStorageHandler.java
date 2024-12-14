@@ -28,6 +28,8 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.druid.data.input.impl.DimensionSchema;
 import org.apache.druid.data.input.impl.DimensionsSpec;
 import org.apache.druid.data.input.impl.InputRowParser;
@@ -391,8 +393,7 @@ import static org.apache.hadoop.hive.druid.DruidStorageHandlerUtils.JSON_MAPPER;
       StringFullResponseHolder
           response =
           RetryUtils.retry(() -> DruidStorageHandlerUtils.getResponseFromCurrentLeader(getHttpClient(),
-              new Request(HttpMethod.POST, new URL(
-                  String.format("http://%s/druid/indexer/v1/supervisor/%s/reset", overlordAddress, dataSourceName))),
+              new Request(HttpMethod.POST, Urls.create(String.format("http://%s/druid/indexer/v1/supervisor/%s/reset", overlordAddress, dataSourceName), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)),
               new StringFullResponseHandler(Charset.forName("UTF-8"))), input -> input instanceof IOException,
               getMaxRetryCount());
       if (response.getStatus().equals(HttpResponseStatus.OK)) {
@@ -412,8 +413,7 @@ import static org.apache.hadoop.hive.druid.DruidStorageHandlerUtils.JSON_MAPPER;
       StringFullResponseHolder
           response =
           RetryUtils.retry(() -> DruidStorageHandlerUtils.getResponseFromCurrentLeader(getHttpClient(),
-              new Request(HttpMethod.POST, new URL(
-                  String.format("http://%s/druid/indexer/v1/supervisor/%s/shutdown", overlordAddress, dataSourceName))),
+              new Request(HttpMethod.POST, Urls.create(String.format("http://%s/druid/indexer/v1/supervisor/%s/shutdown", overlordAddress, dataSourceName), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)),
               new StringFullResponseHandler(Charset.forName("UTF-8"))), input -> input instanceof IOException,
               getMaxRetryCount());
       if (response.getStatus().equals(HttpResponseStatus.OK)) {
@@ -444,7 +444,7 @@ import static org.apache.hadoop.hive.druid.DruidStorageHandlerUtils.JSON_MAPPER;
           response =
           RetryUtils.retry(() -> DruidStorageHandlerUtils.getResponseFromCurrentLeader(getHttpClient(),
               new Request(HttpMethod.GET,
-                  new URL(String.format("http://%s/druid/indexer/v1/supervisor/%s", overlordAddress, dataSourceName))),
+                  Urls.create(String.format("http://%s/druid/indexer/v1/supervisor/%s", overlordAddress, dataSourceName), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)),
               new StringFullResponseHandler(Charset.forName("UTF-8"))), input -> input instanceof IOException,
               getMaxRetryCount());
       if (response.getStatus().equals(HttpResponseStatus.OK)) {
@@ -484,8 +484,7 @@ import static org.apache.hadoop.hive.druid.DruidStorageHandlerUtils.JSON_MAPPER;
       StringFullResponseHolder
           response =
           RetryUtils.retry(() -> DruidStorageHandlerUtils.getResponseFromCurrentLeader(getHttpClient(),
-              new Request(HttpMethod.GET, new URL(
-                  String.format("http://%s/druid/indexer/v1/supervisor/%s/status", overlordAddress, dataSourceName))),
+              new Request(HttpMethod.GET, Urls.create(String.format("http://%s/druid/indexer/v1/supervisor/%s/status", overlordAddress, dataSourceName), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)),
               new StringFullResponseHandler(Charset.forName("UTF-8"))), input -> input instanceof IOException,
               getMaxRetryCount());
       if (response.getStatus().equals(HttpResponseStatus.OK)) {
@@ -558,7 +557,7 @@ import static org.apache.hadoop.hive.druid.DruidStorageHandlerUtils.JSON_MAPPER;
     try {
       coordinatorResponse =
           RetryUtils.retry(() -> DruidStorageHandlerUtils.getResponseFromCurrentLeader(getHttpClient(),
-              new Request(HttpMethod.GET, new URL(String.format("http://%s/status", coordinatorAddress))),
+              new Request(HttpMethod.GET, Urls.create(String.format("http://%s/status", coordinatorAddress), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)),
               new StringFullResponseHandler(Charset.forName("UTF-8"))).getContent(),
               input -> input instanceof IOException, maxTries);
     } catch (Exception e) {
@@ -575,10 +574,10 @@ import static org.apache.hadoop.hive.druid.DruidStorageHandlerUtils.JSON_MAPPER;
         .map(dataSegment -> {
           try {
             //Need to make sure that we are using segment identifier
-            return new URL(String.format("http://%s/druid/coordinator/v1/datasources/%s/segments/%s",
+            return Urls.create(String.format("http://%s/druid/coordinator/v1/datasources/%s/segments/%s",
                 coordinatorAddress,
                 dataSegment.getDataSource(),
-                dataSegment.getId().toString()));
+                dataSegment.getId().toString()), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
           } catch (MalformedURLException e) {
             Throwables.propagate(e);
           }

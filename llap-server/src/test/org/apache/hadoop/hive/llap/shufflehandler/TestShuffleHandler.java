@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hive.llap.shufflehandler;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import static io.netty.buffer.Unpooled.wrappedBuffer;
 
 import java.io.DataInputStream;
@@ -181,8 +183,8 @@ public class TestShuffleHandler {
 
     String shuffleBaseURL = "http://127.0.0.1:"
         + conf.get(ShuffleHandler.SHUFFLE_PORT_CONFIG_KEY);
-    URL url = new URL(shuffleBaseURL + "/mapOutput?job=job_12345_1&dag=1&reduce=1&"
-        + "map=attempt_12345_1_m_1_0");
+    URL url = Urls.create(shuffleBaseURL + "/mapOutput?job=job_12345_1&dag=1&reduce=1&"
+        + "map=attempt_12345_1_m_1_0", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     conn.setRequestProperty(ShuffleHeader.HTTP_HEADER_NAME, ShuffleHeader.DEFAULT_HTTP_HEADER_NAME);
     conn.setRequestProperty(ShuffleHeader.HTTP_HEADER_VERSION,
@@ -202,8 +204,8 @@ public class TestShuffleHandler {
     input.close();
 
     // For keepAlive via URL
-    url = new URL(shuffleBaseURL + "/mapOutput?job=job_12345_1&dag=1&reduce=1&"
-        + "map=attempt_12345_1_m_1_0&keepAlive=true");
+    url = Urls.create(shuffleBaseURL + "/mapOutput?job=job_12345_1&dag=1&reduce=1&"
+        + "map=attempt_12345_1_m_1_0&keepAlive=true", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     conn = (HttpURLConnection) url.openConnection();
     conn.setRequestProperty(ShuffleHeader.HTTP_HEADER_NAME, ShuffleHeader.DEFAULT_HTTP_HEADER_NAME);
     conn.setRequestProperty(ShuffleHeader.HTTP_HEADER_VERSION,
@@ -240,8 +242,8 @@ public class TestShuffleHandler {
 
       String shuffleBaseURL = "http://127.0.0.1:"
           + conf.get(ShuffleHandler.SHUFFLE_PORT_CONFIG_KEY);
-      URL url = new URL(shuffleBaseURL + "/mapOutput?job=job_12345_1&dag=1&reduce=1&"
-          + "map=attempt_12345_1_m_1_0");
+      URL url = Urls.create(shuffleBaseURL + "/mapOutput?job=job_12345_1&dag=1&reduce=1&"
+          + "map=attempt_12345_1_m_1_0", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       conn = (HttpURLConnection) url.openConnection();
       conn.setRequestProperty(ShuffleHeader.HTTP_HEADER_NAME,
           ShuffleHeader.DEFAULT_HTTP_HEADER_NAME);

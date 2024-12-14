@@ -18,6 +18,8 @@
 package org.apache.hadoop.hive.serde2.avro;
 
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.avro.Schema;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,7 +143,7 @@ public class AvroSerdeUtils {
       Schema s = getSchemaFromFS(schemaString, conf);
       if (s == null) {
         //in case schema is not a file system
-        return AvroSerdeUtils.getSchemaFor(new URL(schemaString));
+        return AvroSerdeUtils.getSchemaFor(Urls.create(schemaString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
       }
       return s;
     } catch (IOException ioe) {

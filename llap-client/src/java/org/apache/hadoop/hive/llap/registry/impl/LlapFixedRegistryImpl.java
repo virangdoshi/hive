@@ -13,6 +13,8 @@
  */
 package org.apache.hadoop.hive.llap.registry.impl;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -156,8 +158,7 @@ public class LlapFixedRegistryImpl implements ServiceRegistry<LlapServiceInstanc
       final URL serviceURL;
       try {
         serviceURL =
-            new URL(LlapFixedRegistryImpl.this.webScheme, host, LlapFixedRegistryImpl.this.webPort,
-                "");
+            Urls.create(LlapFixedRegistryImpl.this.webScheme, host, LlapFixedRegistryImpl.this.webPort, "", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         this.serviceAddress = serviceURL.toString();
       } catch (MalformedURLException e) {
         throw new RuntimeException(e);

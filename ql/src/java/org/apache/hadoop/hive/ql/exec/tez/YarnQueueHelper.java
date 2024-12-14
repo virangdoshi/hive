@@ -19,6 +19,8 @@
 
 package org.apache.hadoop.hive.ql.exec.tez;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -149,7 +151,7 @@ public class YarnQueueHelper {
   }
 
   private String checkQueueAccessFromSingleRm(String urlString) throws IOException {
-    URL url = new URL(urlString);
+    URL url = Urls.create(urlString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection connection = UserGroupInformation.isSecurityEnabled() ?
         getSecureConnection(url) : (HttpURLConnection)url.openConnection();
     int statusCode = connection.getResponseCode();

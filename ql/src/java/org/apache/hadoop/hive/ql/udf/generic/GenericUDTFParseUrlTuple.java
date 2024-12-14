@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql.udf.generic;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -174,7 +176,7 @@ public class GenericUDTFParseUrlTuple extends GenericUDTF {
 
     try {
       String ret = null;
-      url = new URL(urlStr);
+      url = Urls.create(urlStr, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       for (int i = 0; i < numCols; ++i) {
         ret = evaluate(url, i);
         if (ret == null) {

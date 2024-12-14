@@ -16,6 +16,8 @@
  */
 package org.apache.hive.service.server;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.conf.HiveConf.ConfVars;
 import org.apache.hadoop.hive.metastore.MetaStoreTestUtils;
@@ -84,7 +86,7 @@ public class TestHS2HttpServerPam {
   @Test
   public void testUnauthorizedConnection() throws Exception {
     String baseURL = "http://" + host + ":" + webUIPort + "/stacks";
-    URL url = new URL(baseURL);
+    URL url = Urls.create(baseURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     Assert.assertEquals(HttpURLConnection.HTTP_UNAUTHORIZED, conn.getResponseCode());
   }

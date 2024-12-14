@@ -17,6 +17,8 @@
  */
 package org.apache.hadoop.hive.metastore.utils;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -549,7 +551,7 @@ public class MetaStoreUtils {
     URL oneurl = null;
     try {
       if (onestr.startsWith("file:/")) {
-        oneurl = new URL(onestr);
+        oneurl = Urls.create(onestr, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       } else {
         oneurl = new File(onestr).toURL();
       }

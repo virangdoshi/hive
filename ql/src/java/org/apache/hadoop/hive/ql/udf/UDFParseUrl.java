@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql.udf;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -67,7 +69,7 @@ public class UDFParseUrl extends UDF {
 
     if (lastUrlStr == null || !urlStr.equals(lastUrlStr)) {
       try {
-        url = new URL(urlStr);
+        url = Urls.create(urlStr, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       } catch (Exception e) {
         return null;
       }

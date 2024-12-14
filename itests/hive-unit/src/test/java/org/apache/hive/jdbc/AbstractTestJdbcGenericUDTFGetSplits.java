@@ -16,6 +16,8 @@
 
 package org.apache.hive.jdbc;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.llap.LlapBaseInputFormat;
@@ -61,7 +63,7 @@ public abstract class AbstractTestJdbcGenericUDTFGetSplits {
     Class.forName(MiniHS2.getJdbcDriverName());
 
     String confDir = "../../data/conf/llap/";
-    HiveConf.setHiveSiteLocation(new URL("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml"));
+    HiveConf.setHiveSiteLocation(Urls.create("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     System.out.println("Setting hive-site: " + HiveConf.getHiveSiteLocation());
 
     conf = new HiveConf();
@@ -77,8 +79,8 @@ public abstract class AbstractTestJdbcGenericUDTFGetSplits {
     conf.setVar(HiveConf.ConfVars.LLAP_EXTERNAL_SPLITS_TEMP_TABLE_STORAGE_FORMAT, "text");
 
 
-    conf.addResource(new URL("file://" + new File(confDir).toURI().getPath()
-        + "/tez-site.xml"));
+    conf.addResource(Urls.create("file://" + new File(confDir).toURI().getPath()
+        + "/tez-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
 
     miniHS2 = new MiniHS2(conf, MiniHS2.MiniClusterType.LLAP);
     dataFileDir = conf.get("test.data.files").replace('\\', '/').replace("c:", "");

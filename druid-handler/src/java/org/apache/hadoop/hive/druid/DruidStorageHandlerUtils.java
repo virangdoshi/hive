@@ -31,6 +31,8 @@ import com.google.common.collect.Interners;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.calcite.adapter.druid.DruidQuery;
 import org.apache.calcite.sql.validate.SqlValidatorUtil;
 import org.apache.druid.common.config.NullHandling;
@@ -291,7 +293,7 @@ public final class DruidStorageHandlerUtils {
    */
   public static Request createSmileRequest(String address, org.apache.druid.query.Query query) {
     try {
-      return new Request(HttpMethod.POST, new URL(String.format("%s/druid/v2/", "http://" + address))).setContent(
+      return new Request(HttpMethod.POST, Urls.create(String.format("%s/druid/v2/", "http://" + address), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)).setContent(
           SMILE_MAPPER.writeValueAsBytes(query)).setHeader(HttpHeaders.Names.CONTENT_TYPE, SMILE_CONTENT_TYPE);
     } catch (MalformedURLException e) {
       LOG.error("URL Malformed  address {}", address);
@@ -328,7 +330,7 @@ public final class DruidStorageHandlerUtils {
       LOG.debug("Request[%s] received redirect response to location [%s].", request.getUrl(), redirectUrlStr);
       final URL redirectUrl;
       try {
-        redirectUrl = new URL(redirectUrlStr);
+        redirectUrl = Urls.create(redirectUrlStr, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       } catch (MalformedURLException ex) {
         throw new ExecutionException(String
             .format("Malformed redirect location is found in response from url[%s], new location[%s].",

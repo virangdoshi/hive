@@ -21,6 +21,8 @@ package org.apache.hadoop.hive.druid;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.druid.data.input.impl.CSVParseSpec;
 import org.apache.druid.data.input.impl.DelimitedParseSpec;
 import org.apache.druid.data.input.impl.DimensionsSpec;
@@ -161,7 +163,7 @@ final class DruidKafkaUtils {
       LOG.info("submitting kafka Supervisor Spec {}", task);
       StringFullResponseHolder response = DruidStorageHandlerUtils
           .getResponseFromCurrentLeader(DruidStorageHandler.getHttpClient(), new Request(HttpMethod.POST,
-                  new URL(String.format("http://%s/druid/indexer/v1/supervisor", overlordAddress)))
+                  Urls.create(String.format("http://%s/druid/indexer/v1/supervisor", overlordAddress), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS))
                   .setContent("application/json", JSON_MAPPER.writeValueAsBytes(spec)),
               new StringFullResponseHandler(Charset.forName("UTF-8")));
       if (response.getStatus().equals(HttpResponseStatus.OK)) {

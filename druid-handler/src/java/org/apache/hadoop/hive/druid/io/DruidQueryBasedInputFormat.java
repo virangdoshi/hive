@@ -19,6 +19,8 @@ package org.apache.hadoop.hive.druid.io;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.druid.java.util.http.client.Request;
@@ -205,7 +207,7 @@ public class DruidQueryBasedInputFormat extends InputFormat<NullWritable, DruidW
     try {
       response =
           DruidStorageHandlerUtils.submitRequest(DruidStorageHandler.getHttpClient(),
-              new Request(HttpMethod.GET, new URL(request)));
+              new Request(HttpMethod.GET, Urls.create(request, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)));
     } catch (Exception e) {
       throw new IOException(org.apache.hadoop.util.StringUtils.stringifyException(e));
     }

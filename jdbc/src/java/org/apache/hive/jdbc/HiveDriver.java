@@ -18,6 +18,8 @@
 
 package org.apache.hive.jdbc;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
@@ -266,8 +268,8 @@ public class HiveDriver implements Driver {
     Class<?> clazz = HiveDriver.class;
     String classContainer = clazz.getProtectionDomain().getCodeSource()
         .getLocation().toString();
-    URL manifestUrl = new URL("jar:" + classContainer
-        + "!/META-INF/MANIFEST.MF");
+    URL manifestUrl = Urls.create("jar:" + classContainer
+        + "!/META-INF/MANIFEST.MF", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     Manifest manifest = new Manifest(manifestUrl.openStream());
     manifestAttributes = manifest.getMainAttributes();
   }

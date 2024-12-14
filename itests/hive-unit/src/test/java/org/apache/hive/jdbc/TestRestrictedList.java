@@ -16,6 +16,8 @@
 
 package org.apache.hive.jdbc;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -52,10 +54,10 @@ public class TestRestrictedList {
     oldHiveMetastoreSiteURL = HiveConf.getMetastoreSiteLocation();
     String confDir = "../../data/conf/rlist/";
     HiveConf.setHiveSiteLocation(
-        new URL("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml"));
+        Urls.create("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     System.out.println("Setting hive-site: " + HiveConf.getHiveSiteLocation());
     HiveConf.setHivemetastoreSiteUrl(
-        new URL("file://" + new File(confDir).toURI().getPath() + "/hivemetastore-site.xml"));
+        Urls.create("file://" + new File(confDir).toURI().getPath() + "/hivemetastore-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     System.out.println("Setting hive-site: " + HiveConf.getHiveSiteLocation());
 
     hiveConf = new HiveConf();

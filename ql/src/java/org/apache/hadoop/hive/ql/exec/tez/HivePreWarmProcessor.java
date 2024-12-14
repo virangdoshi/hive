@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql.exec.tez;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -86,7 +88,7 @@ public class HivePreWarmProcessor extends AbstractLogicalIOProcessor {
     ReadaheadPool rpool = ReadaheadPool.getInstance();
     ShimLoader.getHadoopShims();
 
-    URL hiveurl = new URL("jar:" + DagUtils.getInstance().getExecJarPathLocal(conf) + "!/");
+    URL hiveurl = Urls.create("jar:" + DagUtils.getInstance().getExecJarPathLocal(conf) + "!/", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     JarURLConnection hiveconn = (JarURLConnection)hiveurl.openConnection();
     JarFile hivejar = hiveconn.getJarFile();
     try {

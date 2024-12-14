@@ -14,6 +14,8 @@
 
 package org.apache.hadoop.hive.llap.daemon.services.impl;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.hive.metastore.MetaStoreTestUtils;
@@ -86,7 +88,7 @@ public class TestLlapWebServices {
   @Test
   public void testBaseUrlResponseHeader() throws Exception{
     String baseURL = "http://localhost:" + llapWSPort + "/";
-    URL url = new URL(baseURL);
+    URL url = Urls.create(baseURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     String xfoHeader = conn.getHeaderField("X-FRAME-OPTIONS");
     String xXSSProtectionHeader = conn.getHeaderField("X-XSS-Protection");
@@ -98,7 +100,7 @@ public class TestLlapWebServices {
 
   private static String getURLResponseAsString(String baseURL, int expectedStatus)
       throws IOException {
-    URL url = new URL(baseURL);
+    URL url = Urls.create(baseURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     Assert.assertEquals(expectedStatus, conn.getResponseCode());
     if (expectedStatus != HTTP_OK) {

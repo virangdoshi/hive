@@ -19,6 +19,8 @@
 package org.apache.hadoop.hive.ql.exec.repl;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.atlas.model.impexp.AtlasExportRequest;
 import org.apache.atlas.model.impexp.AtlasServer;
 import org.apache.atlas.model.instance.AtlasObjectId;
@@ -132,7 +134,7 @@ public class AtlasDumpTask extends Task<AtlasDumpWork> implements Serializable {
   private AtlasReplInfo createAtlasReplInfo() throws SemanticException, MalformedURLException {
     String errorFormat = "%s is mandatory config for Atlas metadata replication";
     //Also validates URL for endpoint.
-    String endpoint = new URL(ReplUtils.getNonEmpty(HiveConf.ConfVars.REPL_ATLAS_ENDPOINT.varname, conf, errorFormat))
+    String endpoint = Urls.create(ReplUtils.getNonEmpty(HiveConf.ConfVars.REPL_ATLAS_ENDPOINT.varname, conf, errorFormat), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS)
             .toString();
     String tgtDB = ReplUtils.getNonEmpty(HiveConf.ConfVars.REPL_ATLAS_REPLICATED_TO_DB.varname, conf, errorFormat);
     String srcCluster = ReplUtils.getNonEmpty(HiveConf.ConfVars.REPL_SOURCE_CLUSTER_NAME.varname, conf, errorFormat);

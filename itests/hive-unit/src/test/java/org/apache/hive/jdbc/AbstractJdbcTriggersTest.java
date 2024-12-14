@@ -16,6 +16,8 @@
 
 package org.apache.hive.jdbc;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -66,7 +68,7 @@ public abstract class AbstractJdbcTriggersTest {
     Class.forName(MiniHS2.getJdbcDriverName());
 
     String confDir = "../../data/conf/llap/";
-    HiveConf.setHiveSiteLocation(new URL("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml"));
+    HiveConf.setHiveSiteLocation(Urls.create("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     System.out.println("Setting hive-site: " + HiveConf.getHiveSiteLocation());
 
     conf = new HiveConf();
@@ -80,8 +82,8 @@ public abstract class AbstractJdbcTriggersTest {
     conf.setBoolVar(ConfVars.HIVE_STRICT_CHECKS_CARTESIAN, false);
     conf.setVar(ConfVars.LLAP_IO_MEMORY_MODE, "none");
 
-    conf.addResource(new URL("file://" + new File(confDir).toURI().getPath()
-      + "/tez-site.xml"));
+    conf.addResource(Urls.create("file://" + new File(confDir).toURI().getPath()
+      + "/tez-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
 
     miniHS2 = new MiniHS2(conf, MiniClusterType.LLAP);
     dataFileDir = conf.get("test.data.files").replace('\\', '/').replace("c:", "");

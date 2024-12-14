@@ -18,6 +18,8 @@
 
 package org.apache.hive.jdbc;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
@@ -98,13 +100,13 @@ public abstract class BaseJdbcWithMiniLlap {
   static HiveConf defaultConf() throws Exception {
     String confDir = "../../data/conf/llap/";
     if (confDir != null && !confDir.isEmpty()) {
-      HiveConf.setHiveSiteLocation(new URL("file://"+ new File(confDir).toURI().getPath() + "/hive-site.xml"));
+      HiveConf.setHiveSiteLocation(Urls.create("file://"+ new File(confDir).toURI().getPath() + "/hive-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
       System.out.println("Setting hive-site: " + HiveConf.getHiveSiteLocation());
     }
     HiveConf defaultConf = new HiveConf();
     defaultConf.setBoolVar(ConfVars.HIVE_SUPPORT_CONCURRENCY, false);
     defaultConf.setBoolVar(ConfVars.HIVE_SERVER2_ENABLE_DOAS, false);
-    defaultConf.addResource(new URL("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml"));
+    defaultConf.addResource(Urls.create("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     return defaultConf;
   }
 

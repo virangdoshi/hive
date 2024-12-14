@@ -18,6 +18,8 @@
 
 package org.apache.hive.jdbc;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -90,14 +92,14 @@ public class TestKillQueryWithAuthorizationDisabled {
   static HiveConf defaultConf() throws Exception {
     String confDir = "../../data/conf/llap/";
     if (StringUtils.isNotBlank(confDir)) {
-      HiveConf.setHiveSiteLocation(new URL("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml"));
+      HiveConf.setHiveSiteLocation(Urls.create("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
       System.out.println("Setting hive-site: " + HiveConf.getHiveSiteLocation());
     }
     HiveConf defaultConf = new HiveConf();
     defaultConf.setBoolVar(HiveConf.ConfVars.HIVE_SUPPORT_CONCURRENCY, false);
     defaultConf.setBoolVar(HiveConf.ConfVars.HIVE_SERVER2_ENABLE_DOAS, false);
     defaultConf.setBoolVar(HiveConf.ConfVars.HIVE_QUERY_RESULTS_CACHE_ENABLED, false);
-    defaultConf.addResource(new URL("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml"));
+    defaultConf.addResource(Urls.create("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     return defaultConf;
   }
 

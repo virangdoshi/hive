@@ -18,6 +18,8 @@
 package org.apache.hive.jdbc;
 
 import com.google.common.collect.Lists;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.metrics.MetricsTestUtils;
@@ -79,7 +81,7 @@ public class TestWMMetricsWithTrigger {
   static HiveConf defaultConf() throws Exception {
     String confDir = "../../data/conf/llap/";
     if (StringUtils.isNotBlank(confDir)) {
-      HiveConf.setHiveSiteLocation(new URL("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml"));
+      HiveConf.setHiveSiteLocation(Urls.create("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
       System.out.println("Setting hive-site: " + HiveConf.getHiveSiteLocation());
     }
     HiveConf defaultConf = new HiveConf();
@@ -88,7 +90,7 @@ public class TestWMMetricsWithTrigger {
     defaultConf.setBoolVar(HiveConf.ConfVars.HIVE_QUERY_RESULTS_CACHE_ENABLED, false);
     defaultConf.setVar(HiveConf.ConfVars.HIVE_AUTHENTICATOR_MANAGER,
         "org.apache.hadoop.hive.ql.security.SessionStateUserAuthenticator");
-    defaultConf.addResource(new URL("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml"));
+    defaultConf.addResource(Urls.create("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     defaultConf.setTimeVar(HiveConf.ConfVars.HIVE_TRIGGER_VALIDATION_INTERVAL, 100, TimeUnit.MILLISECONDS);
     defaultConf.setVar(HiveConf.ConfVars.HIVE_SERVER2_TEZ_INTERACTIVE_QUEUE, "default");
     defaultConf.setBoolVar(HiveConf.ConfVars.HIVE_SERVER2_METRICS_ENABLED, true);

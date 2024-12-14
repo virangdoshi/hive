@@ -18,6 +18,8 @@
  */
 package org.apache.hive.hcatalog.templeton;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
@@ -124,7 +126,7 @@ public class CompleteDelegator extends TempletonDelegator {
   public static void doCallback(String jobid, String url) throws IOException {
     if (url.contains("$jobId"))
       url = url.replace("$jobId", jobid);
-    TempletonUtils.fetchUrl(new URL(url));
+    TempletonUtils.fetchUrl(Urls.create(url, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
   }
 
   private void failed(String msg, Exception e)
