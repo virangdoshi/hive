@@ -18,6 +18,7 @@
 package org.apache.hive.service.cli.session;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class TestSessionGlobalInitFile {
 
 
     // create and put .hiverc sample file to default directory
-    initFile = File.createTempFile("test", "hive");
+    initFile = Files.createTempFile("test", "hive").toFile();
     tmpDir =
         initFile.getParentFile().getAbsoluteFile() + File.separator
             + "TestSessionGlobalInitFile";

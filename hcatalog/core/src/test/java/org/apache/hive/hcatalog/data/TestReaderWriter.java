@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -62,7 +63,7 @@ public class TestReaderWriter extends HCatBaseTest {
 
     WriterContext cntxt = runsInMaster(map);
 
-    File writeCntxtFile = File.createTempFile("hcat-write", "temp");
+    File writeCntxtFile = Files.createTempFile("hcat-write", "temp").toFile();
     writeCntxtFile.deleteOnExit();
 
     // Serialize context.
@@ -81,7 +82,7 @@ public class TestReaderWriter extends HCatBaseTest {
 
     ReaderContext readCntxt = runsInMaster(map, false);
 
-    File readCntxtFile = File.createTempFile("hcat-read", "temp");
+    File readCntxtFile = Files.createTempFile("hcat-read", "temp").toFile();
     readCntxtFile.deleteOnExit();
     oos = new ObjectOutputStream(new FileOutputStream(readCntxtFile));
     oos.writeObject(readCntxt);

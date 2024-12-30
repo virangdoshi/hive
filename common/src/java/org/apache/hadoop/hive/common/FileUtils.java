@@ -26,6 +26,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.nio.file.Files;
 import java.security.AccessControlException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
@@ -1085,7 +1086,7 @@ public final class FileUtils {
             + lScratchDir);
       }
     }
-    File tmpFile = File.createTempFile(prefix, suffix, tmpDir);
+    File tmpFile = Files.createTempFile(tmpDir.toPath(), prefix, suffix).toFile();
     ShutdownHookManager.deleteOnExit(tmpFile);
     return tmpFile;
   }
@@ -1109,7 +1110,7 @@ public final class FileUtils {
       return createFileInTmp(prefix, suffix, "Cannot access or create " + targetDir, isDirectory);
     }
     try {
-      File file = File.createTempFile(prefix, suffix, targetDir);
+      File file = Files.createTempFile(targetDir.toPath(), prefix, suffix).toFile();
       if (isDirectory && (!file.delete() || !file.mkdirs())) {
         // TODO: or we could just generate a name ourselves and not do this?
         return createFileInTmp(prefix, suffix,
@@ -1125,7 +1126,7 @@ public final class FileUtils {
 
   private static File createFileInTmp(String prefix, String suffix,
       String reason, boolean isDirectory) throws IOException {
-    File file = File.createTempFile(prefix, suffix);
+    File file = Files.createTempFile(prefix, suffix).toFile();
     if (isDirectory && (!file.delete() || !file.mkdirs())) {
       // TODO: or we could just generate a name ourselves and not do this?
       throw new IOException("Cannot recreate " + file + " as directory");

@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.common;
 
+import java.nio.file.Files;
 import org.junit.Assert;
 import org.apache.hadoop.conf.Configuration;
 import org.junit.Test;
@@ -81,7 +82,7 @@ public class TestValidReadTxnList {
     String str = txnList.writeToString();
     Configuration conf = new Configuration();
     conf.set(ValidTxnList.VALID_TXNS_KEY, str);
-    File tmpFile = File.createTempFile("TestValidTxnImpl", "readWriteConfig");
+    File tmpFile = Files.createTempFile("TestValidTxnImpl", "readWriteConfig").toFile();
     DataOutputStream out = new DataOutputStream(new FileOutputStream(tmpFile));
     conf.write(out);
     out.close();

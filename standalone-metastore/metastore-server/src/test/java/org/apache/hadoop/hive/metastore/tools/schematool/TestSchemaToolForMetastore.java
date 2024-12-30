@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.URI;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -468,7 +469,7 @@ public class TestSchemaToolForMetastore {
   }
 
   private File generateTestScript(String [] stmts) throws IOException {
-    File testScriptFile = File.createTempFile("schematest", ".sql");
+    File testScriptFile = Files.createTempFile("schematest", ".sql").toFile();
     testScriptFile.deleteOnExit();
     FileWriter fstream = new FileWriter(testScriptFile.getPath());
     BufferedWriter out = new BufferedWriter(fstream);

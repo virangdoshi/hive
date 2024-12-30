@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -234,7 +235,7 @@ public class TestMultiOutputFormat {
    * @throws IOException if any error encountered
    */
   private String createInputFile(String content) throws IOException {
-    File f = File.createTempFile("input", "txt");
+    File f = Files.createTempFile("input", "txt").toFile();
     FileWriter writer = new FileWriter(f);
     writer.write(content);
     writer.close();

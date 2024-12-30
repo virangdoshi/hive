@@ -26,6 +26,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Files;
 import java.text.MessageFormat;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -259,7 +260,7 @@ public class JarUtils {
             if (!testDir.exists()) {
               testDir.mkdirs();
             }
-            File tempJar = File.createTempFile("hadoop-", "", testDir);
+            File tempJar = Files.createTempFile(testDir.toPath(), "hadoop-", "").toFile();
             tempJar = new File(tempJar.getAbsolutePath() + ".jar");
             createJar(baseDir, tempJar);
             return tempJar.getAbsolutePath();

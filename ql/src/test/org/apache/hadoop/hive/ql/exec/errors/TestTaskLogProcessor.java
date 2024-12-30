@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +53,7 @@ public class TestTaskLogProcessor {
   
   private File writeTestLog(String id, String content) throws IOException {
     // Put the script content in a temp file
-    File scriptFile = File.createTempFile(getClass().getName() + "-" + id + "-", ".log");
+    File scriptFile = Files.createTempFile(getClass().getName() + "-" + id + "-", ".log").toFile();
     scriptFile.deleteOnExit();
     toBeDeletedList.add(scriptFile);
     PrintStream os = new PrintStream(new FileOutputStream(scriptFile));

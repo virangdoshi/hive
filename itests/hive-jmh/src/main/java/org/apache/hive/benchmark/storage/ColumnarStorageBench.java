@@ -14,6 +14,7 @@
 
 package org.apache.hive.benchmark.storage;
 
+import java.nio.file.Files;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -360,7 +361,7 @@ public class ColumnarStorageBench {
       throw new IOException("Cannot create temporary files in a non-local file-system: Operation not permitted.");
     }
 
-    File temp = File.createTempFile(this.toString(), null, new File(DEFAULT_TEMP_LOCATION));
+    File temp = Files.createTempFile(new File(DEFAULT_TEMP_LOCATION).toPath(), this.toString(), null).toFile();
     temp.deleteOnExit();
     temp.delete();
 

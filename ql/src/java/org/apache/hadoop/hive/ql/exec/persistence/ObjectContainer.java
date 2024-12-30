@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.apache.hadoop.fs.FileUtil;
 import org.apache.hadoop.hive.common.FileUtils;
@@ -80,7 +81,7 @@ public class ObjectContainer<ROW> {
       }
 
       if (tmpFile == null || input != null) {
-        tmpFile = File.createTempFile("ObjectContainer", ".tmp", parentDir);
+        tmpFile = Files.createTempFile(parentDir.toPath(), "ObjectContainer", ".tmp").toFile();
         LOG.info("ObjectContainer created temp file " + tmpFile.getAbsolutePath());
         tmpFile.deleteOnExit();
       }

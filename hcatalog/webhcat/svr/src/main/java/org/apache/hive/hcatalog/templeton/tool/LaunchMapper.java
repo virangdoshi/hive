@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.templeton.tool;
 
+import java.nio.file.Files;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
@@ -183,7 +184,7 @@ public class LaunchMapper extends Mapper<NullWritable, NullWritable, Text, Text>
               Text(SecureProxySupport.HIVE_SERVICE));
       cred.addToken(new
               Text(SecureProxySupport.HIVE_SERVICE), token);
-      File t = File.createTempFile("templeton", null);
+      File t = Files.createTempFile("templeton", null).toFile();
       Path tokenPath = new Path(t.toURI());
       cred.writeTokenStorageFile(tokenPath, conf);
       env.put(UserGroupInformation.HADOOP_TOKEN_FILE_LOCATION,
