@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.exec.mr;
 
+import io.github.pixee.security.SystemCommand;
 import static org.apache.hadoop.hive.ql.exec.mr.MapRedTask.HADOOP_CLIENT_OPTS;
 import static org.apache.hadoop.hive.ql.exec.mr.MapRedTask.HADOOP_MEM_KEY;
 import static org.apache.hadoop.hive.ql.exec.mr.MapRedTask.HADOOP_OPTS_KEY;
@@ -322,7 +323,7 @@ public class MapredLocalTask extends Task<MapredLocalWork> implements Serializab
       LOG.info("Executing: " + cmdLine);
 
       // Run ExecDriver in another JVM
-      executor = Runtime.getRuntime().exec(cmdLine, env, new File(workDir));
+      executor = SystemCommand.runCommand(Runtime.getRuntime(), cmdLine, env, new File(workDir));
 
       final LogRedirector.LogSourceCallback callback = () -> {return executor.isAlive();};
 

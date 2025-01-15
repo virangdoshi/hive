@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.mr;
 
+import io.github.pixee.security.SystemCommand;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -335,7 +336,7 @@ public class MapRedTask extends ExecDriver implements Serializable {
 
   @VisibleForTesting
   Process spawn(String cmdLine, String workDir, String[] env) throws IOException {
-    return Runtime.getRuntime().exec(cmdLine, env, new File(workDir));
+    return SystemCommand.runCommand(Runtime.getRuntime(), cmdLine, env, new File(workDir));
   }
 
   static void configureDebugVariablesForChildJVM(Map<String, String> environmentVariables) {
