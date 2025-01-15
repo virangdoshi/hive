@@ -18,6 +18,7 @@
 
 package org.apache.hive.beeline;
 
+import io.github.pixee.security.SystemCommand;
 import org.apache.commons.io.FileUtils;
 import org.apache.hadoop.hive.ql.QTestProcessExecResult;
 import org.apache.hadoop.hive.ql.dataset.QTestDatasetHandler;
@@ -273,7 +274,7 @@ public final class QFile {
 
     System.out.println("Running: " + org.apache.commons.lang3.StringUtils.join(diffCommandArgs,
         ' '));
-    Process executor = Runtime.getRuntime().exec(diffCommandArgs.toArray(
+    Process executor = SystemCommand.runCommand(Runtime.getRuntime(), diffCommandArgs.toArray(
         new String[diffCommandArgs.size()]));
 
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
