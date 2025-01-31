@@ -3350,12 +3350,15 @@ abstract class TxnHandler implements TxnStore, TxnStore.MutexAPI {
         dbConn = getDbConn(Connection.TRANSACTION_READ_COMMITTED);
         stmt = dbConn.createStatement();
         //hl_txnid <> 0 means it's associated with a transaction
-        String s = "DELETE FROM \"HIVE_LOCKS\" WHERE \"HL_LOCK_EXT_ID\" = " + extLockId + " AND (\"HL_TXNID\" = 0 OR" +
-          " (\"HL_TXNID\" <> 0 AND \"HL_LOCK_STATE\" = '" + LOCK_WAITING + "'))";
+        String s = "DELETE FROM \"HIVE_LOCKS\" WHERE \"HL_LOCK_EXT_ID\" = " + extLockId + " AND (\"HL_TXNID\" = 0 OR (\"HL_TXNID\" <> 0 AND \"HL_LOCK_STATE\" = ?))";
         //(hl_txnid <> 0 AND hl_lock_state = '" + LOCK_WAITING + "') is for multi-statement txns where
         //some query attempted to lock (thus LOCK_WAITING state) but is giving up due to timeout for example
         LOG.debug("Going to execute update <{}>", s);
-        int rc = stmt.executeUpdate(s);
+        stmt.close();
+        PreparedStatement statement = dbConn.prepareStatement(s);
+        statement.setString(1, LOCK_WAITING);
+        int rc = statement.execute();
+        stmt = statement;
         if (rc < 1) {
           LOG.info("Failure to unlock any locks with extLockId={}.", extLockId);
           dbConn.rollback();

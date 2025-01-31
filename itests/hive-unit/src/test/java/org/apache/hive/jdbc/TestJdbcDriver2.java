@@ -1214,12 +1214,15 @@ public class TestJdbcDriver2 {
     String fullTestTableName = StatsUtils.getFullyQualifiedTableName(testDbName, tableNameInDbUnique);
     // create a table with a unique name in testDb
     stmt.execute("drop table if exists " + fullTestTableName);
-    stmt.execute("create table " + fullTestTableName
-        + " (under_col int comment 'the under column', value string) comment '" + tableComment
-        + "'");
+    stmt.close();
 
+    PreparedStatement statement = con.prepareStatement("create table " + fullTestTableName
+        + " (under_col int comment 'the under column', value string) comment ?");
+
+    statement.setString(1, tableComment);
+    statement.execute();
+    stmt = statement;
     ResultSet res = stmt.executeQuery("show tables in " + testDbName);
-
     boolean testTableExists = false;
     while (res.next()) {
       assertNotNull("table name is null in result set", res.getString(1));
@@ -2538,12 +2541,13 @@ public class TestJdbcDriver2 {
    */
   @Test
   public void testQueryCancel() throws Exception {
-    String udfName = SleepMsUDF.class.getName();
-    Statement stmt1 = con.createStatement();
-    stmt1.execute("create temporary function sleepMsUDF as '" + udfName + "'");
+    PreparedStatement stmt1 = con.prepareStatement("create temporary function sleepMsUDF as ?");
+    stmt1.setString(1, SleepMsUDF.class.getName());
+    stmt1.execute();
     stmt1.close();
+    
     final Statement stmt = con.createStatement();
-    // Thread executing the query
+    
     Thread tExecute = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -2561,7 +2565,6 @@ public class TestJdbcDriver2 {
         }
       }
     });
-    // Thread cancelling the query
     Thread tCancel = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -2584,12 +2587,13 @@ public class TestJdbcDriver2 {
 
   @Test
   public void testQueryCancelTwice() throws Exception {
-    String udfName = SleepMsUDF.class.getName();
-    Statement stmt1 = con.createStatement();
-    stmt1.execute("create temporary function sleepMsUDF as '" + udfName + "'");
+    PreparedStatement stmt1 = con.prepareStatement("create temporary function sleepMsUDF as ?");
+    stmt1.setString(1, SleepMsUDF.class.getName());
+    stmt1.execute();
     stmt1.close();
+    
     final Statement stmt = con.createStatement();
-    // Thread executing the query
+    
     Thread tExecute = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -2607,7 +2611,6 @@ public class TestJdbcDriver2 {
         }
       }
     });
-    // Thread cancelling the query
     Thread tCancel = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -2640,15 +2643,18 @@ public class TestJdbcDriver2 {
 
   @Test
   public void testQueryTimeout() throws Exception {
-    String udfName = SleepMsUDF.class.getName();
-    Statement stmt1 = con.createStatement();
-    stmt1.execute("create temporary function sleepMsUDF as '" + udfName + "'");
+    PreparedStatement stmt1 = con.prepareStatement("create temporary function sleepMsUDF as ?");
+    stmt1.setString(1, SleepMsUDF.class.getName());
+    stmt1.execute();
     stmt1.close();
-    Statement stmt = con.createStatement();
     // Test a query where timeout kicks in
-    // Set query timeout to 1 second
+    
+    Statement stmt = con.createStatement();
     stmt.setQueryTimeout(1);
     System.err.println("Executing query: ");
+
+    // Test a query where timeout does not kick in. Set it to 5s;
+    
     try {
       // The test table has 500 rows, so total query time should be ~ 2500ms
       stmt.executeQuery("select sleepMsUDF(t1.under_col, 5) as u0, t1.under_col as u1, "
@@ -2662,9 +2668,6 @@ public class TestJdbcDriver2 {
       fail("Expecting SQLTimeoutException, but got SQLException: " + e);
       e.printStackTrace();
     }
-
-    // Test a query where timeout does not kick in. Set it to 5s;
-    // show tables should be faster than that
     stmt.setQueryTimeout(5);
     try {
       stmt.executeQuery("show tables");
@@ -2685,11 +2688,13 @@ public class TestJdbcDriver2 {
    */
   @Test
   public void testYarnATSGuid() throws Exception {
-    String udfName = SleepMsUDF.class.getName();
-    Statement stmt1 = con.createStatement();
-    stmt1.execute("create temporary function sleepMsUDF as '" + udfName + "'");
+    PreparedStatement stmt1 = con.prepareStatement("create temporary function sleepMsUDF as ?");
+    stmt1.setString(1, SleepMsUDF.class.getName());
+    stmt1.execute();
     stmt1.close();
     final Statement stmt = con.createStatement();
+
+    
     final Holder<Boolean> yarnATSGuidSet = new Holder<Boolean>() {
       public Boolean b = false;
 
@@ -2701,8 +2706,7 @@ public class TestJdbcDriver2 {
         return this.b;
       }
     };
-
-    // Thread executing the query
+    
     Thread tExecute = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -2717,7 +2721,6 @@ public class TestJdbcDriver2 {
         }
       }
     });
-    // Thread reading the ATS GUID
     Thread tGuid = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -2771,24 +2774,25 @@ public class TestJdbcDriver2 {
     String nonAsciiTableName = "nonAsciiTable";
     String nonAsciiString = "Garçu Kôkaku kidôtai";
     Path nonAsciiFilePath = new Path(dataFileDir, "non_ascii_tbl.txt");
-    Statement stmt = con.createStatement();
+    PreparedStatement stmt = con.prepareStatement("load data local inpath ? into table "
+        + nonAsciiTableName);
     stmt.execute("set hive.support.concurrency = false");
 
     // Create table
     stmt.execute("create table " + nonAsciiTableName + " (key int, value string) "
         + "row format delimited fields terminated by '|'");
 
-    // Load data
-    stmt.execute("load data local inpath '" + nonAsciiFilePath.toString() + "' into table "
-        + nonAsciiTableName);
+    
+    stmt.setString(1, nonAsciiFilePath.toString());
 
+    stmt.execute();
     ResultSet rs = stmt.executeQuery("select value from " + nonAsciiTableName + " limit 1");
+
+    
     while (rs.next()) {
       String resultValue = rs.getString(1);
       assertTrue(resultValue.equalsIgnoreCase(nonAsciiString));
     }
-
-    // Drop table, ignore error.
     try {
       stmt.execute("drop table " + nonAsciiTableName);
     } catch (Exception ex) {

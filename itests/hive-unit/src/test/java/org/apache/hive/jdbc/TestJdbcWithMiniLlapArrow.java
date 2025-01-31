@@ -18,6 +18,7 @@
 
 package org.apache.hive.jdbc;
 
+import java.sql.PreparedStatement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import java.math.BigDecimal;
@@ -96,7 +97,6 @@ public class TestJdbcWithMiniLlapArrow extends BaseJdbcWithMiniLlap {
     Statement stmt = conDefault.createStatement();
     String tblName = testDbName + "." + tableName;
     Path dataFilePath = new Path(dataFileDir, "kv1.txt");
-    String udfName = SleepMsUDF.class.getName();
     stmt.execute("drop database if exists " + testDbName + " cascade");
     stmt.execute("create database " + testDbName);
     stmt.execute("set role admin");
@@ -104,9 +104,13 @@ public class TestJdbcWithMiniLlapArrow extends BaseJdbcWithMiniLlap {
     stmt.execute("use " + testDbName);
     stmt.execute("create table " + tblName + " (int_col int, value string) ");
     stmt.execute("load data inpath 'kv1.txt' into table " + tblName);
-    stmt.execute("create function sleepMsUDF as '" + udfName + "'");
-    stmt.execute("grant select on table " + tblName + " to role public");
+    stmt.close();
+    PreparedStatement statement = conDefault.prepareStatement("create function sleepMsUDF as ?");
 
+    statement.setString(1, SleepMsUDF.class.getName());
+    statement.execute();
+    stmt = statement;
+    stmt.execute("grant select on table " + tblName + " to role public");
     stmt.close();
     conDefault.close();
   }
@@ -335,7 +339,7 @@ public class TestJdbcWithMiniLlapArrow extends BaseJdbcWithMiniLlap {
     Connection con2 = BaseJdbcWithMiniLlap.getConnection(miniHS2.getJdbcURL(testDbName),
             killUser, "bar");
 
-    final Statement stmt2 = con2.createStatement();
+    final PreparedStatement stmt2 = con2.prepareStatement("kill query ?");
     final HiveStatement stmt = (HiveStatement)con1.createStatement();
     final StringBuffer stmtQueryId = new StringBuffer();
 
@@ -383,7 +387,8 @@ public class TestJdbcWithMiniLlapArrow extends BaseJdbcWithMiniLlap {
         if (killUser.equals(System.getProperty("user.name"))) {
           stmt2.execute("set role admin");
         }
-        stmt2.execute("kill query '" + queryId + "'");
+        stmt2.setString(1, queryId);
+        stmt2.execute();
         stmt2.close();
         break;
       } catch (SQLException e) {

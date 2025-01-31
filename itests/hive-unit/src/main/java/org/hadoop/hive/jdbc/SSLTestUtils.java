@@ -21,6 +21,7 @@ package org.hadoop.hive.jdbc;
 import java.io.File;
 import java.net.URLEncoder;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Map;
 
@@ -93,7 +94,7 @@ public class SSLTestUtils {
 
   public static void setupTestTableWithData(String tableName, Path dataFilePath,
       Connection hs2Conn) throws Exception {
-    Statement stmt = hs2Conn.createStatement();
+    PreparedStatement stmt = hs2Conn.prepareStatement("load data local inpath ? into table " + tableName);
     stmt.execute("set hive.support.concurrency = false");
     stmt.execute("set hive.txn.manager = org.apache.hadoop.hive.ql.lockmgr.DummyTxnManager");
 
@@ -101,9 +102,9 @@ public class SSLTestUtils {
     stmt.execute("create table " + tableName
         + " (under_col int comment 'the under column', value string)");
 
-    // load data
-    stmt.execute("load data local inpath '"
-        + dataFilePath.toString() + "' into table " + tableName);
+    
+    stmt.setString(1, dataFilePath.toString());
+    stmt.execute();
     stmt.close();
   }
 

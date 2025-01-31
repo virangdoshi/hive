@@ -18,6 +18,7 @@
 
 package org.apache.hive.service;
 
+import java.sql.PreparedStatement;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -119,7 +120,6 @@ public class TestDFSErrorHandling
     // unprivileged user will result in a DFS error.
     fs.setPermission(stickyBitDir, fsPermission);
 
-    FileStatus[] files = fs.listStatus(stickyBitDir);
 
     // Connecting to HS2 as foo.
     Connection hs2Conn = DriverManager.getConnection(miniHS2.getJdbcURL(), "foo", "bar");
@@ -132,9 +132,12 @@ public class TestDFSErrorHandling
 
     try {
       // This statement will attempt to move kv1.txt out of stickyBitDir as user foo.  HS2 is
-      // expected to return 20009.
-      stmt.execute("LOAD DATA INPATH '" + stickyBitDir.toUri().getPath() + "/kv1.txt' "
-          + "OVERWRITE INTO TABLE " + tableName);
+      
+      stmt.close();
+      PreparedStatement statement = hs2Conn.prepareStatement("LOAD DATA INPATH ? OVERWRITE INTO TABLE " + tableName);
+      statement.setString(1, stickyBitDir.toUri().getPath() + "/kv1.txt");
+      statement.execute();
+      stmt = statement;
     } catch (Exception e) {
       if (e instanceof SQLException) {
         SQLException se = (SQLException) e;

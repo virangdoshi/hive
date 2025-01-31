@@ -18,6 +18,7 @@
 
 package org.apache.hive.jdbc;
 
+import java.sql.PreparedStatement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
@@ -138,7 +139,7 @@ public abstract class BaseJdbcWithMiniLlap {
 
   public static void createTestTable(Connection connection, String database, String tableName, String srcFile) throws
     Exception {
-    Statement stmt = connection.createStatement();
+    PreparedStatement stmt = connection.prepareStatement("load data local inpath ? into table " + tableName);
 
     if (database != null) {
       stmt.execute("CREATE DATABASE IF NOT EXISTS " + database);
@@ -150,9 +151,10 @@ public abstract class BaseJdbcWithMiniLlap {
     stmt.execute("CREATE TABLE " + tableName
         + " (under_col INT COMMENT 'the under column', value STRING) COMMENT ' test table'");
 
-    // load data
-    stmt.execute("load data local inpath '" + srcFile + "' into table " + tableName);
+    
+    stmt.setString(1, srcFile);
 
+    stmt.execute();
     ResultSet res = stmt.executeQuery("SELECT * FROM " + tableName);
     assertTrue(res.next());
     assertEquals("val_238", res.getString(2));
@@ -161,7 +163,7 @@ public abstract class BaseJdbcWithMiniLlap {
   }
 
   protected void createDataTypesTable(String tableName) throws Exception {
-    Statement stmt = hs2Conn.createStatement();
+    PreparedStatement stmt = hs2Conn.prepareStatement("load data local inpath ? into table " + tableName);
 
     // create table
     stmt.execute("DROP TABLE IF EXISTS " + tableName);
@@ -183,8 +185,8 @@ public abstract class BaseJdbcWithMiniLlap {
         + " c22 char(15),"
         + " c23 binary"
         + ")");
-    stmt.execute("load data local inpath '"
-        + dataTypesFilePath.toString() + "' into table " + tableName);
+    stmt.setString(1, dataTypesFilePath.toString());
+    stmt.execute();
     stmt.close();
   }
 
@@ -741,17 +743,18 @@ public abstract class BaseJdbcWithMiniLlap {
     Connection con = hs2Conn;
     Connection con2 = getConnection(miniHS2.getJdbcURL(), System.getProperty("user.name"), "bar");
 
-    String udfName = TestJdbcWithMiniHS2.SleepMsUDF.class.getName();
-    Statement stmt1 = con.createStatement();
-    Statement stmt2 = con2.createStatement();
-    stmt1.execute("create temporary function sleepMsUDF as '" + udfName + "'");
+    PreparedStatement stmt1 = con.prepareStatement("create temporary function sleepMsUDF as ?");
+    Statement stmt2;
+    stmt1.setString(1, TestJdbcWithMiniHS2.SleepMsUDF.class.getName());
+    stmt1.execute();
     stmt1.close();
+
     final Statement stmt = con.createStatement();
-
     ExceptionHolder tExecuteHolder = new ExceptionHolder();
-    ExceptionHolder tKillHolder = new ExceptionHolder();
 
-    // Thread executing the query
+    
+    ExceptionHolder tKillHolder = new ExceptionHolder();
+    
     Thread tExecute = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -766,7 +769,7 @@ public abstract class BaseJdbcWithMiniLlap {
         }
       }
     });
-    // Thread killing the query
+
     Thread tKill = new Thread(new Runnable() {
       @Override
       public void run() {
@@ -775,21 +778,23 @@ public abstract class BaseJdbcWithMiniLlap {
           String queryId = ((HiveStatement) stmt).getQueryId();
           System.out.println("Killing query: " + queryId);
 
-          stmt2.execute("kill query '" + queryId + "'");
+          PreparedStatement statement = con2.prepareStatement("kill query ?");
+          statement.setString(1, ((HiveStatement) stmt).getQueryId());
+          statement.execute();
+          stmt2 = statement;
           stmt2.close();
         } catch (Exception e) {
           tKillHolder.throwable = e;
         }
       }
     });
-
     tExecute.start();
     tKill.start();
     tExecute.join();
     tKill.join();
     stmt.close();
-    con2.close();
 
+    con2.close();
     assertNotNull("tExecute", tExecuteHolder.throwable);
     assertEquals(HiveStatement.QUERY_CANCELLED_MESSAGE + " "+ KillQueriesOperation.KILL_QUERY_MESSAGE,
         tExecuteHolder.throwable.getMessage());

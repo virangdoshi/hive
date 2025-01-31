@@ -17,6 +17,7 @@
  */
 package org.apache.hive.jdbc;
 
+import java.sql.PreparedStatement;
 import org.apache.curator.test.TestingServer;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -120,9 +121,13 @@ public class TestJdbcWithServiceDiscovery {
     stmt.execute("create database " + DB_NAME);
     stmt.execute("use " + DB_NAME);
     stmt.execute("create table " + tblName + " (int_col int, value string) ");
-    stmt.execute("load data local inpath '" + kvDataFilePath.toString() + "' into table " + tblName);
-    stmt.execute("grant select on table " + tblName + " to role public");
+    stmt.close();
+    PreparedStatement statement = conDefault.prepareStatement("load data local inpath ? into table " + tblName);
 
+    statement.setString(1, kvDataFilePath.toString());
+    statement.execute();
+    stmt = statement;
+    stmt.execute("grant select on table " + tblName + " to role public");
     stmt.close();
     conDefault.close();
   }
@@ -183,7 +188,7 @@ public class TestJdbcWithServiceDiscovery {
   private void executeQueryAndKill(Connection con1, Connection con2, ExceptionHolder tExecuteHolder,
       ExceptionHolder tKillHolder) throws SQLException, InterruptedException {
     final HiveStatement stmt = (HiveStatement) con1.createStatement();
-    final Statement stmt2 = con2.createStatement();
+    final Statement stmt2;
     final StringBuffer stmtQueryId = new StringBuffer();
 
     // Thread executing the query
@@ -217,7 +222,10 @@ public class TestJdbcWithServiceDiscovery {
         }
 
         LOG.info("Killing query: " + queryId);
-        stmt2.execute("kill query '" + queryId + "'");
+        PreparedStatement statement = con2.prepareStatement("kill query ?");
+        statement.setString(1, stmtQueryId.toString());
+        statement.execute();
+        stmt2 = statement;
         stmt2.close();
         break;
       } catch (SQLException e) {
@@ -242,15 +250,16 @@ public class TestJdbcWithServiceDiscovery {
     Connection con1 = DriverManager.getConnection(miniHS2directUrl1, System.getProperty("user.name"), "bar");
     Connection con2 = DriverManager.getConnection(miniHS2directUrl1, System.getProperty("user.name"), "bar");
 
-    Statement stmt = con1.createStatement();
-    stmt.execute("create temporary function sleepMsUDF as '" + SleepMsUDF.class.getName() + "'");
-    stmt.close();
+    PreparedStatement stmt = con1.prepareStatement("create temporary function sleepMsUDF as ?");
+    stmt.setString(1, SleepMsUDF.class.getName());
+    stmt.execute();
 
+    stmt.close();
     ExceptionHolder tExecuteHolder = new ExceptionHolder();
+
     ExceptionHolder tKillHolder = new ExceptionHolder();
 
     executeQueryAndKill(con1, con2, tExecuteHolder, tKillHolder);
-
     assertNotNull("tExecute", tExecuteHolder.throwable);
     assertEquals("Query was cancelled. User invoked KILL QUERY", tExecuteHolder.throwable.getMessage());
     assertNull("tCancel", tKillHolder.throwable);
@@ -261,15 +270,16 @@ public class TestJdbcWithServiceDiscovery {
     Connection con1 = DriverManager.getConnection(miniHS2directUrl1, System.getProperty("user.name"), "bar");
     Connection con2 = DriverManager.getConnection(miniHS2directUrl2, System.getProperty("user.name"), "bar");
 
-    Statement stmt = con1.createStatement();
-    stmt.execute("create temporary function sleepMsUDF as '" + SleepMsUDF.class.getName() + "'");
-    stmt.close();
+    PreparedStatement stmt = con1.prepareStatement("create temporary function sleepMsUDF as ?");
+    stmt.setString(1, SleepMsUDF.class.getName());
+    stmt.execute();
 
+    stmt.close();
     ExceptionHolder tExecuteHolder = new ExceptionHolder();
+
     ExceptionHolder tKillHolder = new ExceptionHolder();
 
     executeQueryAndKill(con1, con2, tExecuteHolder, tKillHolder);
-
     assertNotNull("tExecute", tExecuteHolder.throwable);
     assertEquals(HiveStatement.QUERY_CANCELLED_MESSAGE + " " + KillQueriesOperation.KILL_QUERY_MESSAGE,
         tExecuteHolder.throwable.getMessage());
@@ -281,19 +291,20 @@ public class TestJdbcWithServiceDiscovery {
     Connection con1 = DriverManager.getConnection(miniHS2directUrl1, System.getProperty("user.name"), "bar");
     Connection con2 = DriverManager.getConnection(miniHS2directUrl2, System.getProperty("user.name"), "bar");
 
-    Statement stmt = con1.createStatement();
-    stmt.execute("create temporary function sleepMsUDF as '" + SleepMsUDF.class.getName() + "'");
-    stmt.close();
+    PreparedStatement stmt = null;
+    stmt.setString(1, SleepMsUDF.class.getName());
+    stmt.execute();
 
-    stmt = con2.createStatement();
+    stmt.close();
+    stmt = con2.prepareStatement("create temporary function sleepMsUDF as ?");
     stmt.execute("set hive.zookeeper.killquery.enable = false");
-    stmt.close();
 
+    stmt.close();
     ExceptionHolder tExecuteHolder = new ExceptionHolder();
+
     ExceptionHolder tKillHolder = new ExceptionHolder();
 
     executeQueryAndKill(con1, con2, tExecuteHolder, tKillHolder);
-
     assertNull("tExecute", tExecuteHolder.throwable);
     assertNull("tCancel", tKillHolder.throwable);
   }

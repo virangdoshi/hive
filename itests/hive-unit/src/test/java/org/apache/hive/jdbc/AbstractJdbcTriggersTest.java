@@ -16,6 +16,7 @@
 
 package org.apache.hive.jdbc;
 
+import java.sql.PreparedStatement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -113,10 +114,10 @@ public abstract class AbstractJdbcTriggersTest {
   public abstract String getTestName();
 
   private void createSleepUDF() throws SQLException {
-    String udfName = TestJdbcWithMiniHS2.SleepMsUDF.class.getName();
     Connection con = hs2Conn;
-    Statement stmt = con.createStatement();
-    stmt.execute("create temporary function sleep as '" + udfName + "'");
+    PreparedStatement stmt = con.prepareStatement("create temporary function sleep as ?");
+    stmt.setString(1, TestJdbcWithMiniHS2.SleepMsUDF.class.getName());
+    stmt.execute();
     stmt.close();
   }
 
