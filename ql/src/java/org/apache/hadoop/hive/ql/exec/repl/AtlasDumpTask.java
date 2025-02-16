@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.exec.repl;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.atlas.model.impexp.AtlasExportRequest;
 import org.apache.atlas.model.impexp.AtlasServer;
 import org.apache.atlas.model.instance.AtlasObjectId;
@@ -157,7 +158,7 @@ public class AtlasDumpTask extends Task<AtlasDumpWork> implements Serializable {
         try {
           FileSystem fs = prevMetadataPath.getFileSystem(conf);
           br = new BufferedReader(new InputStreamReader(fs.open(prevMetadataPath), Charset.defaultCharset()));
-          String line = br.readLine();
+          String line = BoundedLineReader.readLine(br, 5_000_000);
           if (line == null) {
             throw new SemanticException(ErrorMsg.REPL_INVALID_INTERNAL_CONFIG_FOR_SERVICE
               .format("Could not read lastStoredTimeStamp from atlas metadata file",

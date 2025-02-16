@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,7 +75,7 @@ public class MetaStoreSchemaInfo implements IMetaStoreSchemaInfo {
     try (FileReader fr = new FileReader(upgradeListFile);
         BufferedReader bfReader = new BufferedReader(fr)) {
       String currSchemaVersion;
-      while ((currSchemaVersion = bfReader.readLine()) != null) {
+      while ((currSchemaVersion = BoundedLineReader.readLine(bfReader, 5_000_000)) != null) {
         upgradeOrderList.add(currSchemaVersion.trim());
       }
     } catch (FileNotFoundException e) {

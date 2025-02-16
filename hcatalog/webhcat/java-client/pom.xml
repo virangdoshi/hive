@@ -110,6 +110,10 @@
       <classifier>tests</classifier>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>io.github.pixee</groupId>
+      <artifactId>java-security-toolkit</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <sourceDirectory>${basedir}/src/main/java</sourceDirectory>

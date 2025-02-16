@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.io;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -72,7 +73,7 @@ public class SymbolicInputFormat implements ReworkMapredInputFormat {
             partDesc.setInputFileFormatClass(TextInputFormat.class);
 
             String line;
-            while ((line = reader.readLine()) != null) {
+            while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
               // no check for the line? How to check?
               // if the line is invalid for any reason, the job will fail.
               FileStatus[] matches = fileSystem.globStatus(new Path(line));

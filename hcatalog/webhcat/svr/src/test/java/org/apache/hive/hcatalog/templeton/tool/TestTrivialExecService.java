@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.templeton.tool;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -43,10 +44,10 @@ public class TestTrivialExecService {
         process.getInputStream()));
       err = new BufferedReader(new InputStreamReader(
         process.getErrorStream()));
-      Assert.assertEquals("success", out.readLine());
+      Assert.assertEquals("success", BoundedLineReader.readLine(out, 5_000_000));
       out.close();
       String line;
-      while ((line = err.readLine()) != null) {
+      while ((line = BoundedLineReader.readLine(err, 5_000_000)) != null) {
         Assert.fail(line);
       }
       process.waitFor();

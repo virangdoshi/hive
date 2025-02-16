@@ -22,6 +22,7 @@
  */
 package org.apache.hive.beeline;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -892,7 +893,7 @@ public class Commands {
     try {
       reader = new BufferedReader(new FileReader(sourceFile));
       String lines = null, extra;
-      while ((extra = reader.readLine()) != null) {
+      while ((extra = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
         if (beeLine.isComment(extra)) {
           continue;
         }
@@ -1957,7 +1958,7 @@ public class Commands {
         new InputStreamReader(in));
     String man;
     int index = 0;
-    while ((man = breader.readLine()) != null) {
+    while ((man = BoundedLineReader.readLine(breader, 5_000_000)) != null) {
       index++;
       beeLine.output(man);
 

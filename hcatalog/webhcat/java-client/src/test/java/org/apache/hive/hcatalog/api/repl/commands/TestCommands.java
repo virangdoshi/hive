@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.api.repl.commands;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.fs.FileSystem;
@@ -319,7 +320,7 @@ public class TestCommands {
     BufferedReader reader = new BufferedReader(new InputStreamReader(fs.open(mdFilePath)));
     StringBuilder sb = new StringBuilder();
     String line;
-    while ((line = reader.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       sb.append(line);
     }
     reader.close();

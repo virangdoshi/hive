@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.io;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.DataInput;
 import java.io.DataOutput;
@@ -198,7 +199,7 @@ public class SymlinkTextInputFormat extends SymbolicInputFormat implements
               new InputStreamReader(
                   fileSystem.open(symlink.getPath())));
           String line;
-          while ((line = reader.readLine()) != null) {
+          while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
             targetPaths.add(new Path(line));
             symlinkPaths.add(symlink.getPath());
           }

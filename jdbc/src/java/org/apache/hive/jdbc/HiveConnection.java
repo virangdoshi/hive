@@ -18,6 +18,7 @@
 
 package org.apache.hive.jdbc;
 
+import io.github.pixee.security.BoundedLineReader;
 import static org.apache.hadoop.hive.conf.Constants.MODE;
 import static org.apache.hive.service.cli.operation.hplsql.HplSqlQueryExecutor.HPLSQL;
 
@@ -459,7 +460,7 @@ public class HiveConnection implements java.sql.Connection {
       br = new BufferedReader(new InputStreamReader(input, "UTF-8"));
       String line;
       StringBuilder sb = new StringBuilder("");
-      while ((line = br.readLine()) != null) {
+      while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
         line = line.trim();
         if (line.length() != 0) {
           if (line.startsWith("#") || line.startsWith("--")) {

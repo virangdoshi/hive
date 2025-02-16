@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.common.log;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.slf4j.Logger;
 
 import java.io.BufferedReader;
@@ -62,7 +63,7 @@ public class LogRedirector implements Runnable {
   public void run() {
     try {
       String line = null;
-      while ((line = in.readLine()) != null) {
+      while ((line = BoundedLineReader.readLine(in, 5_000_000)) != null) {
         logger.info(line);
         if (errLogs != null) {
           if (numErrLogLines++ < MAX_ERR_LOG_LINES_FOR_RPC) {

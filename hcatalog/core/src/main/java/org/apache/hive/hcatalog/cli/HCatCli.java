@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.cli;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -261,7 +262,7 @@ public class HCatCli {
       String line;
       StringBuilder qsb = new StringBuilder();
 
-      while ((line = reader.readLine()) != null) {
+      while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
         qsb.append(line + "\n");
       }
 

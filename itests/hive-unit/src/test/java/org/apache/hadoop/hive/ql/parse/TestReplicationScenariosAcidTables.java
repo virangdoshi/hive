@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.parse;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -1158,8 +1159,8 @@ public class TestReplicationScenariosAcidTables extends BaseReplicationScenarios
     Path loadMetadataFilePath = new Path(hiveDumpDir, ReplAck.LOAD_METADATA.toString());
     FileSystem fs = dumpLocation.getFileSystem(conf);
     BufferedReader reader = new BufferedReader(new InputStreamReader(fs.open(loadMetadataFilePath)));
-    String line = reader.readLine();
-    assertTrue(line != null && reader.readLine() == null);
+    String line = BoundedLineReader.readLine(reader, 5_000_000);
+    assertTrue(line != null && BoundedLineReader.readLine(reader, 5_000_000) == null);
     if (reader != null) {
       reader.close();
     }

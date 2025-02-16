@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.parse.repl.load;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.repl.ReplScope;
@@ -123,7 +124,7 @@ public class DumpMetaData {
       FileSystem fs = dumpFile.getFileSystem(hiveConf);
       br = new BufferedReader(new InputStreamReader(fs.open(dumpFile)));
       String line;
-      if ((line = br.readLine()) != null) {
+      if ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
         String[] lineContents = line.split("\t", 7);
         setDump(lineContents[0].equals(Utilities.nullStringOutput) ? null : DumpType.valueOf(lineContents[0]),
           lineContents[1].equals(Utilities.nullStringOutput) ? null : Long.valueOf(lineContents[1]),
@@ -137,7 +138,7 @@ public class DumpMetaData {
         throw new IOException(
             "Unable to read valid values from dumpFile:" + dumpFile.toUri().toString());
       }
-      readReplScope(br.readLine());
+      readReplScope(BoundedLineReader.readLine(br, 5_000_000));
     } catch (IOException ioe) {
       throw new SemanticException(ioe);
     } finally {

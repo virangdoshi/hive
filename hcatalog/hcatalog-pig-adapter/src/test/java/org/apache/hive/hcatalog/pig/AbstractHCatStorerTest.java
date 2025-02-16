@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.pig;
 
+import io.github.pixee.security.BoundedLineReader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -405,7 +406,7 @@ public abstract class AbstractHCatStorerTest extends HCatBaseTest {
     BufferedReader reader = new BufferedReader(new FileReader(file));
     String line = null;
     LOG.debug("Dumping raw file: " + fileName);
-    while ((line = reader.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       LOG.debug(line);
     }
     reader.close();

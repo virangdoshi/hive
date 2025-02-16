@@ -19,6 +19,7 @@ package org.apache.hadoop.hive.metastore.tools.schematool;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.metastore.HiveMetaException;
 import org.apache.hadoop.hive.metastore.conf.MetastoreConf;
@@ -273,7 +274,7 @@ public class HiveSchemaHelper {
       String currLine;
       StringBuilder sb = new StringBuilder();
       String currentCommand = null;
-      while ((currLine = bfReader.readLine()) != null) {
+      while ((currLine = BoundedLineReader.readLine(bfReader, 5_000_000)) != null) {
         currLine = currLine.trim();
 
         if (fixQuotes && !getQuoteCharacter().equals(DEFAULT_QUOTE)) {

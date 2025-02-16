@@ -18,6 +18,7 @@
 
 package org.apache.hive.service.cli.operation;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -304,7 +305,7 @@ public class OperationLogManager {
       try (BufferedReader reader =
                new BufferedReader(new InputStreamReader(new ByteArrayInputStream(buffer.array(), 0, read)))) {
         String line;
-        while ((line = reader.readLine()) != null) {
+        while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
           builder.append(line).append(System.lineSeparator());
         }
       }

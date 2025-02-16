@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.cli;
 
+import io.github.pixee.security.BoundedLineReader;
 import static org.apache.hadoop.util.StringUtils.stringifyException;
 
 import java.io.BufferedReader;
@@ -495,7 +496,7 @@ public class CliDriver {
     String line;
     StringBuilder qsb = new StringBuilder();
 
-    while ((line = r.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(r, 5_000_000)) != null) {
       // Skipping through comments
       if (! line.startsWith("--")) {
         qsb.append(line + "\n");

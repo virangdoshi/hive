@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.history;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class HiveHistoryUtil {
    try {
      String line = null;
      StringBuilder buf = new StringBuilder();
-     while ((line = reader.readLine()) != null) {
+     while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
        buf.append(line);
        // if it does not end with " then it is line continuation
        if (!line.trim().endsWith("\"")) {

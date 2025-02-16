@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.errors;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -125,7 +126,7 @@ public class TaskLogProcessor {
         in = new BufferedReader(
             new InputStreamReader(taskAttemptLogUrl.openStream()));
         String inputLine;
-        while ((inputLine = in.readLine()) != null) {
+        while ((inputLine = BoundedLineReader.readLine(in, 5_000_000)) != null) {
           for(ErrorHeuristic e : heuristics.keySet()) {
             e.processLogLine(inputLine);
           }
@@ -207,7 +208,7 @@ public class TaskLogProcessor {
 
         String inputLine;
         while (true) {
-          inputLine = in.readLine();
+          inputLine = BoundedLineReader.readLine(in, 5_000_000);
           if (inputLine == null) { // EOF:
             if (stackTrace != null) {
               stackTraces.add(stackTrace);

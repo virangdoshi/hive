@@ -18,6 +18,7 @@
 
 package org.apache.hive.common.util;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -50,13 +51,13 @@ public class StreamPrinter extends Thread {
       br = new BufferedReader(isr);
       String line = null;
       if (type != null) {
-        while ((line = br.readLine()) != null) {
+        while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
           for (PrintStream os: outputStreams) {
             os.println(type + ">" + line);
           }
         }
       } else {
-        while ((line = br.readLine()) != null) {
+        while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
           for (PrintStream os: outputStreams) {
             os.println(line);
           }

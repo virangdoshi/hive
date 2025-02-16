@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.templeton;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -62,7 +63,7 @@ class StreamOutputWriter extends Thread
       BufferedReader br =
         new BufferedReader(new InputStreamReader(is));
       String line = null;
-      while ( (line = br.readLine()) != null){
+      while ( (line = BoundedLineReader.readLine(br, 5_000_000)) != null){
         out.println(line);
       }
     } catch (IOException ioe)

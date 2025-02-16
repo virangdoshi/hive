@@ -22,6 +22,7 @@
  */
 package org.apache.hive.beeline;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -47,9 +48,9 @@ class SQLCompleter extends StringsCompleter {
     Set<String> completions = new TreeSet<String>();
 
     // add the default SQL completions
-    String keywords = new BufferedReader(new InputStreamReader(
+    String keywords = BoundedLineReader.readLine(new BufferedReader(new InputStreamReader(
         SQLCompleter.class.getResourceAsStream(
-            "/sql-keywords.properties"))).readLine();
+            "/sql-keywords.properties"))), 5_000_000);
 
     // now add the keywords from the current connection
     try {

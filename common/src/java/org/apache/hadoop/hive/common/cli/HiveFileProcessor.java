@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.common.cli;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 
@@ -58,7 +59,7 @@ public abstract class HiveFileProcessor implements IHiveFileProcessor {
   protected int processReader(BufferedReader reader) throws IOException {
     String line;
     StringBuilder qsb = new StringBuilder();
-    while ((line = reader.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       if (!line.startsWith("--")) {
         qsb.append(line);
       }

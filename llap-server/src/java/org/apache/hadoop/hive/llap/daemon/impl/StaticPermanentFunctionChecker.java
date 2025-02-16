@@ -13,6 +13,7 @@
  */
 package org.apache.hadoop.hive.llap.daemon.impl;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hive.ql.exec.FunctionRegistry;
 import org.apache.hadoop.hive.ql.udf.generic.GenericUDFBridge.UdfWhitelistChecker;
@@ -39,7 +40,7 @@ public class StaticPermanentFunctionChecker implements UdfWhitelistChecker {
       return;
     }
     try (BufferedReader r = new BufferedReader(new InputStreamReader(logger.openStream()))) {
-      String klassName = r.readLine();
+      String klassName = BoundedLineReader.readLine(r, 5_000_000);
       while (klassName != null) {
         try {
           Class<?> clazz = Class.forName(klassName.trim(), false, this.getClass().getClassLoader());
@@ -49,7 +50,7 @@ public class StaticPermanentFunctionChecker implements UdfWhitelistChecker {
           // note: explicit format to use Throwable instead of var-args
           LOG.warn("Could not load class " + klassName + " declared in UDF whitelist", ie);
         }
-        klassName = r.readLine();
+        klassName = BoundedLineReader.readLine(r, 5_000_000);
       }
     } catch (IOException ioe) {
       LOG.warn("Could not read UDF whitelist: " + PERMANENT_FUNCTIONS_LIST, ioe);
