@@ -19,6 +19,7 @@
 
 package org.apache.hive.hcatalog.utils;
 
+import io.github.pixee.security.ObjectInputFilters;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -56,6 +57,7 @@ public class DataWriterMaster {
     if (args.length == 3 && "commit".equalsIgnoreCase(args[2])) {
       // Then, master commits if everything goes well.
       ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(args[1])));
+      ObjectInputFilters.enableObjectFilterIfUnprotected(ois);
       WriterContext cntxt = (WriterContext) ois.readObject();
       commit(config, true, cntxt);
       System.exit(0);

@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.utils;
 
+import io.github.pixee.security.ObjectInputFilters;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +39,7 @@ public class DataReaderSlave {
   public static void main(String[] args) throws IOException, ClassNotFoundException {
 
     ObjectInputStream ois = new ObjectInputStream(new FileInputStream(new File(args[0])));
+    ObjectInputFilters.enableObjectFilterIfUnprotected(ois);
     ReaderContext cntxt = (ReaderContext) ois.readObject();
     ois.close();
 

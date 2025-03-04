@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.exec.mr;
 
+import io.github.pixee.security.ObjectInputFilters;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -96,6 +97,7 @@ public class HashTableLoader implements org.apache.hadoop.hive.ql.exec.HashTable
         LOG.info("Load back 1 hashtable file from tmp file uri: {}", path);
         ObjectInputStream in = new ObjectInputStream(new BufferedInputStream(
             new FileInputStream(path.toUri().getPath())));
+        ObjectInputFilters.enableObjectFilterIfUnprotected(in);
         try{
           mapJoinTables[pos] = mapJoinTableSerdes[pos].load(in);
         } finally {
