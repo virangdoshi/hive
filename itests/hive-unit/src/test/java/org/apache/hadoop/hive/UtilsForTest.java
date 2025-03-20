@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.net.URL;
 import java.util.Iterator;
@@ -61,10 +63,10 @@ public class UtilsForTest {
 
   public static HiveConf getHiveOnTezConfFromDir(String confDir) throws Exception {
     HiveConf.setHiveSiteLocation(
-        new URL("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml"));
+        Urls.create("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     HiveConf hiveConf = new HiveConf();
     hiveConf
-        .addResource(new URL("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml"));
+        .addResource(Urls.create("file://" + new File(confDir).toURI().getPath() + "/tez-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     return hiveConf;
   }
 

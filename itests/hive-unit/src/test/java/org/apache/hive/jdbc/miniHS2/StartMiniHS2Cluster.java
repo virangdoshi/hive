@@ -17,6 +17,8 @@
  */
 package org.apache.hive.jdbc.miniHS2;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.net.URL;
 import java.util.HashMap;
@@ -58,7 +60,7 @@ public class StartMiniHS2Cluster {
       if (confFile.isEmpty()) {
         continue;
       }
-      HiveConf.setHiveSiteLocation(new URL("file://"+ new File(confFile).toURI().getPath()));
+      HiveConf.setHiveSiteLocation(Urls.create("file://"+ new File(confFile).toURI().getPath(), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
       break;
     }
     HiveConf conf = new HiveConf();
@@ -70,7 +72,7 @@ public class StartMiniHS2Cluster {
       if (confFile.isEmpty()) {
         continue;
       }
-      conf.addResource(new URL("file://" + new File(confFile).toURI().getPath()));
+      conf.addResource(Urls.create("file://" + new File(confFile).toURI().getPath(), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     }
 
     miniHS2 = new MiniHS2(conf, clusterType, usePortsFromConf, isMetastoreRemote);

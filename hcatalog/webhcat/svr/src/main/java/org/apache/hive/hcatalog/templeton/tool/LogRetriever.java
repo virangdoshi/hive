@@ -18,6 +18,8 @@
  */
 package org.apache.hive.hcatalog.templeton.tool;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -252,10 +254,9 @@ public class LogRetriever {
   // Retrieve job conf into logDir
   private void logJobConf(String job, String jobURLInString, String jobDir)
     throws IOException {
-    URL jobURL = new URL(jobURLInString);
+    URL jobURL = Urls.create(jobURLInString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     String fileInURL = "/jobconf.jsp?jobid=" + job;
-    URL jobTasksURL = new URL(jobURL.getProtocol(), jobURL.getHost(),
-        jobURL.getPort(), fileInURL);
+    URL jobTasksURL = Urls.create(jobURL.getProtocol(), jobURL.getHost(), jobURL.getPort(), fileInURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     URLConnection urlConnection = jobTasksURL.openConnection();
     BufferedReader reader = null;
     PrintWriter writer = null;
@@ -287,9 +288,8 @@ public class LogRetriever {
     // Get task detail link from the jobtask page
     String fileInURL = "/jobtasks.jsp?jobid=" + job + "&type=" + type
         + "&pagenum=1&state=completed";
-    URL jobURL = new URL(jobURLInString);
-    URL jobTasksURL = new URL(jobURL.getProtocol(), jobURL.getHost(),
-        jobURL.getPort(), fileInURL);
+    URL jobURL = Urls.create(jobURLInString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
+    URL jobTasksURL = Urls.create(jobURL.getProtocol(), jobURL.getHost(), jobURL.getPort(), fileInURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     List<String>[] taskAttemptURLAndTimestamp = getMatches(jobTasksURL,
       new Pattern[] { attemptDetailPattern, attemptStartTimePattern,
         attemptEndTimePattern });
@@ -298,13 +298,12 @@ public class LogRetriever {
     // Go to task details, fetch task tracker url
     for (int i = 0; i < taskAttemptURLAndTimestamp[0].size(); i++) {
       String taskString = taskAttemptURLAndTimestamp[0].get(i);
-      URL taskDetailsURL = new URL(jobURL.getProtocol(), jobURL.getHost(),
-          jobURL.getPort(), "/" + taskString);
+      URL taskDetailsURL = Urls.create(jobURL.getProtocol(), jobURL.getHost(), jobURL.getPort(), "/" + taskString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       List<String>[] attemptLogStrings = getMatches(taskDetailsURL,
           new Pattern[] { attemptLogPattern });
       for (String attemptLogString : attemptLogStrings[0]) {
         AttemptInfo attempt = new AttemptInfo();
-        attempt.baseUrl = new URL(attemptLogString);
+        attempt.baseUrl = Urls.create(attemptLogString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         attempt.startTime = taskAttemptURLAndTimestamp[1].get(i);
         attempt.endTime = taskAttemptURLAndTimestamp[2].get(i);
         attempt.type = type;
@@ -325,9 +324,8 @@ public class LogRetriever {
     throws IOException {
     String fileInURL = "/jobfailures.jsp?jobid=" + job
         + "&kind=all&cause=failed";
-    URL jobURL = new URL(jobURLInString);
-    URL url = new URL(jobURL.getProtocol(), jobURL.getHost(), jobURL.getPort(),
-        fileInURL);
+    URL jobURL = Urls.create(jobURLInString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
+    URL url = Urls.create(jobURL.getProtocol(), jobURL.getHost(), jobURL.getPort(), fileInURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     List<String>[] attemptLogStrings = getMatches(url,
         new Pattern[] { attemptDetailPattern });
     List<String> failedTaskStrings = new ArrayList<String>();
@@ -338,15 +336,14 @@ public class LogRetriever {
     }
     List<AttemptInfo> results = new ArrayList<AttemptInfo>();
     for (String taskString : failedTaskStrings) {
-      URL taskDetailsURL = new URL(jobURL.getProtocol(), jobURL.getHost(),
-        jobURL.getPort(), "/" + taskString);
+      URL taskDetailsURL = Urls.create(jobURL.getProtocol(), jobURL.getHost(), jobURL.getPort(), "/" + taskString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       List<String>[] taskAttemptURLAndTimestamp = getMatches(taskDetailsURL,
         new Pattern[] { attemptLogPattern, attemptStartTimePattern,
           attemptEndTimePattern });
       for (int i = 0; i < taskAttemptURLAndTimestamp[0].size(); i++) {
         String attemptLogString = taskAttemptURLAndTimestamp[0].get(i);
         AttemptInfo attempt = new AttemptInfo();
-        attempt.baseUrl = new URL(attemptLogString);
+        attempt.baseUrl = Urls.create(attemptLogString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         attempt.startTime = taskAttemptURLAndTimestamp[1].get(i);
         attempt.endTime = taskAttemptURLAndTimestamp[2].get(i);
         Matcher matcher = attemptIDPattern.matcher(attemptLogString);
@@ -373,9 +370,8 @@ public class LogRetriever {
       // Retrieve log from task tracker
       String fileInURL = "tasklog?attemptid=" + attemptInfo.id
           + "&plaintext=true&filter=" + type;
-      URL url = new URL(attemptInfo.baseUrl.getProtocol(),
-          attemptInfo.baseUrl.getHost(), attemptInfo.baseUrl.getPort(), "/"
-              + fileInURL);
+      URL url = Urls.create(attemptInfo.baseUrl.getProtocol(), attemptInfo.baseUrl.getHost(), attemptInfo.baseUrl.getPort(), "/"
+              + fileInURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
 
       URLConnection urlConnection = url.openConnection();
       BufferedReader reader = null;

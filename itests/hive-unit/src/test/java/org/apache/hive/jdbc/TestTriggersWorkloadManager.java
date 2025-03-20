@@ -16,6 +16,8 @@
 
 package org.apache.hive.jdbc;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.FileWriter;
 import java.net.URL;
@@ -57,12 +59,12 @@ public class TestTriggersWorkloadManager extends TestTriggersTezSessionPoolManag
     Class.forName(MiniHS2.getJdbcDriverName());
 
     String confDir = "../../data/conf/llap/";
-    HiveConf.setHiveSiteLocation(new URL("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml"));
+    HiveConf.setHiveSiteLocation(Urls.create("file://" + new File(confDir).toURI().getPath() + "/hive-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     conf = new HiveConf();
     conf.setVar(ConfVars.HIVE_AUTHENTICATOR_MANAGER, "org.apache.hadoop.hive.ql.security.SessionStateUserAuthenticator");
     java.nio.file.Path confPath = File.createTempFile("hive", "test").toPath();
     conf.writeXml(new FileWriter(confPath.toFile()));
-    HiveConf.setHiveSiteLocation(new URL("file://" + confPath.toString()));
+    HiveConf.setHiveSiteLocation(Urls.create("file://" + confPath.toString(), Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
 
     System.out.println("Setting hive-site: " + HiveConf.getHiveSiteLocation());
 
@@ -77,8 +79,8 @@ public class TestTriggersWorkloadManager extends TestTriggersTezSessionPoolManag
     // don't want cache hits from llap io for testing filesystem bytes read counters
     conf.setVar(ConfVars.LLAP_IO_MEMORY_MODE, "none");
 
-    conf.addResource(new URL("file://" + new File(confDir).toURI().getPath()
-      + "/tez-site.xml"));
+    conf.addResource(Urls.create("file://" + new File(confDir).toURI().getPath()
+      + "/tez-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
 
     miniHS2 = new MiniHS2(conf, MiniClusterType.LLAP);
     dataFileDir = conf.get("test.data.files").replace('\\', '/').replace("c:", "");
