@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.exec.vector.rowbytescontainer;
 
+import java.nio.file.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.hadoop.fs.FileUtil;
@@ -90,7 +91,7 @@ public class VectorRowBytesContainer {
   private void setupOutputFileStreams() throws IOException {
     parentDir = FileUtils.createLocalDirsTempFile(spillLocalDirs, "bytes-container", "", true);
     parentDir.deleteOnExit();
-    tmpFile = File.createTempFile("BytesContainer", ".tmp", parentDir);
+    tmpFile = Files.createTempFile(parentDir.toPath(), "BytesContainer", ".tmp").toFile();
     LOG.debug("BytesContainer created temp file " + tmpFile.getAbsolutePath());
     tmpFile.deleteOnExit();
 

@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.util.Map;
 
 import org.apache.hadoop.fs.FileSystem;
@@ -64,7 +65,7 @@ public class SecureCmdDoAs {
       }
     }
 
-    tokenFile = File.createTempFile("hive_hadoop_delegation_token", null);
+    tokenFile = Files.createTempFile("hive_hadoop_delegation_token", null).toFile();
     tokenPath = new Path(tokenFile.toURI());
 
     //write credential with token to file

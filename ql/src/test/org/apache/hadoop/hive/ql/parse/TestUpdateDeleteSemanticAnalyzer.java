@@ -19,6 +19,7 @@ package org.apache.hadoop.hive.ql.parse;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -299,7 +300,7 @@ public class TestUpdateDeleteSemanticAnalyzer {
   private String explain(SemanticAnalyzer sem, QueryPlan plan) throws
       IOException {
     FileSystem fs = FileSystem.get(conf);
-    File f = File.createTempFile("TestSemanticAnalyzer", "explain");
+    File f = Files.createTempFile("TestSemanticAnalyzer", "explain").toFile();
     Path tmp = new Path(f.getPath());
     fs.create(tmp);
     fs.deleteOnExit(tmp);

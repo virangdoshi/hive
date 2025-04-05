@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.security.PrivilegedExceptionAction;
 import java.util.Collection;
 import java.util.List;
@@ -82,7 +83,7 @@ public class SecureProxySupport {
     close();
     if (isEnabled) {
       this.user = user;
-      File t = File.createTempFile("templeton", null);
+      File t = Files.createTempFile("templeton", null).toFile();
       tokenPath = new Path(t.toURI());
       Token[] fsToken = getFSDelegationToken(user, conf);
       String hcatTokenStr;

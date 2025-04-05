@@ -20,6 +20,7 @@ package org.apache.hadoop.hive.ql.exec.persistence;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -529,7 +530,7 @@ public class RowContainer<ROW extends List<Object>>
 
       parentDir = FileUtils.createLocalDirsTempFile(spillFileDirs, "hive-rowcontainer", "", true);
 
-      tmpFile = File.createTempFile("RowContainer", suffix, parentDir);
+      tmpFile = Files.createTempFile(parentDir.toPath(), "RowContainer", suffix).toFile();
       LOG.info("RowContainer created temp file " + tmpFile.getAbsolutePath());
       // Delete the temp file if the JVM terminate normally through Hadoop job
       // kill command.

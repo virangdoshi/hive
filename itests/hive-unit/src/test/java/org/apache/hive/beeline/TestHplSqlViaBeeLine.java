@@ -20,6 +20,7 @@
 
 package org.apache.hive.beeline;
 
+import java.nio.file.Files;
 import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
@@ -389,7 +390,7 @@ public class TestHplSqlViaBeeLine {
 
   private void testScriptFile(String scriptText, List<String> argList, String expectedPattern)
           throws Throwable {
-    File scriptFile = File.createTempFile(this.getClass().getSimpleName(), "temp");
+    File scriptFile = Files.createTempFile(this.getClass().getSimpleName(), "temp").toFile();
     scriptFile.deleteOnExit();
     try (PrintStream os = new PrintStream(new FileOutputStream(scriptFile))) {
       os.print(scriptText);

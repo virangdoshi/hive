@@ -882,7 +882,7 @@ public final class BuddyAllocator
       File rf = null;
       Preconditions.checkArgument(isDirect, "All memory mapped allocations have to be direct buffers");
       try {
-        rf = File.createTempFile("arena-", ".cache", cacheDir.toFile());
+        rf = Files.createTempFile(cacheDir.toFile().toPath(), "arena-", ".cache").toFile();
         rwf = new RandomAccessFile(rf, "rw");
         rwf.setLength(arenaSize); // truncate (TODO: posix_fallocate?)
         // Use RW, not PRIVATE because the copy-on-write is irrelevant for a deleted file

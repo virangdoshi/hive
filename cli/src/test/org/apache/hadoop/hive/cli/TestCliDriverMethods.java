@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.cli;
 
 
+import java.nio.file.Files;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -314,7 +315,7 @@ public class TestCliDriverMethods {
     String oldHiveHome = System.getenv("HIVE_HOME");
     String oldHiveConfDir = System.getenv("HIVE_CONF_DIR");
 
-    File homeFile = File.createTempFile("test", "hive");
+    File homeFile = Files.createTempFile("test", "hive").toFile();
     String tmpDir = homeFile.getParentFile().getAbsoluteFile() + File.separator
         + "TestCliDriverMethods";
     homeFile.delete();
@@ -362,7 +363,7 @@ public class TestCliDriverMethods {
       FileUtils.deleteDirectory(new File(tmpDir));
     }
 
-    File f = File.createTempFile("hive", "test");
+    File f = Files.createTempFile("hive", "test").toFile();
     FileUtils.write(f, "bla bla bla");
     try {
       sessionState.initFiles = Arrays.asList(new String[] {f.getAbsolutePath()});
@@ -441,11 +442,11 @@ public class TestCliDriverMethods {
       case 0:
         return "!echo test message;";
       case 1:
-        temp = File.createTempFile("hive", "test");
+        temp = Files.createTempFile("hive", "test").toFile();
         temp.deleteOnExit();
         return "source  " + temp.getAbsolutePath() + ";";
       case 2:
-        temp = File.createTempFile("hive", "test");
+        temp = Files.createTempFile("hive", "test").toFile();
         temp.deleteOnExit();
         writer = new FileWriter(temp);
         writer.write("bla bla bla");
@@ -458,7 +459,7 @@ public class TestCliDriverMethods {
       case 5:
         return "source  fakeFile;";
       case 6:
-        temp = File.createTempFile("hive", "test");
+        temp = Files.createTempFile("hive", "test").toFile();
         temp.deleteOnExit();
         writer = new FileWriter(temp);
         writer.write("source  fakeFile;");
