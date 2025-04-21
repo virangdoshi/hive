@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.common.cli;
 
+import io.github.pixee.security.SystemCommand;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -36,7 +37,7 @@ public class ShellCmdExecutor {
 
   public int execute() throws Exception {
     try {
-      Process executor = Runtime.getRuntime().exec(cmd);
+      Process executor = SystemCommand.runCommand(Runtime.getRuntime(), cmd);
       StreamPrinter outPrinter = new StreamPrinter(executor.getInputStream(), null, out);
       StreamPrinter errPrinter = new StreamPrinter(executor.getErrorStream(), null, err);
 

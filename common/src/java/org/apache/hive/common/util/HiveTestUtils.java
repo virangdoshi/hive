@@ -18,6 +18,7 @@
 
 package org.apache.hive.common.util;
 
+import io.github.pixee.security.SystemCommand;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -59,7 +60,7 @@ public class HiveTestUtils {
   }
 
   private static void executeCmd(String[] cmdArr, File dir) throws IOException, InterruptedException {
-    final Process p1 = Runtime.getRuntime().exec(cmdArr, null, dir);
+    final Process p1 = SystemCommand.runCommand(Runtime.getRuntime(), cmdArr, null, dir);
     new Thread(new Runnable() {
       @Override
       @SuppressFBWarnings(value = "OS_OPEN_STREAM", justification = "Testing only")

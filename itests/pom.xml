@@ -25,6 +25,7 @@
   <name>Hive Integration - Parent</name>
   <properties>
     <hive.path.to.root>..</hive.path.to.root>
+    <versions.java-security-toolkit>1.2.1</versions.java-security-toolkit>
   </properties>
   <modules>
     <module>custom-serde</module>
@@ -486,6 +487,11 @@
         <groupId>org.apache.hive</groupId>
         <artifactId>hive-iceberg-handler</artifactId>
         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.pixee</groupId>
+        <artifactId>java-security-toolkit</artifactId>
+        <version>${versions.java-security-toolkit}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
