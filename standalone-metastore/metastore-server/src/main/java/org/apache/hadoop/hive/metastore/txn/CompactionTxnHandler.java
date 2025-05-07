@@ -338,11 +338,13 @@ class CompactionTxnHandler extends TxnHandler {
       try {
         dbConn = getDbConn(Connection.TRANSACTION_READ_COMMITTED, connPoolCompaction);
         stmt = dbConn.createStatement();
-        String s = "UPDATE \"COMPACTION_QUEUE\" SET \"CQ_STATE\" = '" + READY_FOR_CLEANING + "', "
-            + "\"CQ_WORKER_ID\" = NULL"
-            + " WHERE \"CQ_ID\" = " + info.id;
+        String s = "UPDATE \"COMPACTION_QUEUE\" SET \"CQ_STATE\" = ?, \"CQ_WORKER_ID\" = NULL WHERE \"CQ_ID\" = " + info.id;
         LOG.debug("Going to execute update <{}>", s);
-        int updCnt = stmt.executeUpdate(s);
+        stmt.close();
+        PreparedStatement statement = dbConn.prepareStatement(s);
+        statement.setString(1, READY_FOR_CLEANING);
+        int updCnt = statement.executeUpdate();
+        stmt = statement;
         if (updCnt != 1) {
           LOG.error("Unable to set cq_state={} for compaction record: {}. updCnt={}", READY_FOR_CLEANING, info, updCnt);
           LOG.debug("Going to rollback");
@@ -920,13 +922,17 @@ class CompactionTxnHandler extends TxnHandler {
       try {
         dbConn = getDbConn(Connection.TRANSACTION_READ_COMMITTED, connPoolCompaction);
         stmt = dbConn.createStatement();
-        String s = "UPDATE \"COMPACTION_QUEUE\" SET \"CQ_WORKER_ID\" = NULL, \"CQ_START\" = NULL, \"CQ_STATE\" = '"
-          + INITIATED_STATE+ "' WHERE \"CQ_STATE\" = '" + WORKING_STATE + "' AND \"CQ_WORKER_ID\" LIKE '"
-          +  hostname + "%'";
+        String s = "UPDATE \"COMPACTION_QUEUE\" SET \"CQ_WORKER_ID\" = NULL, \"CQ_START\" = NULL, \"CQ_STATE\" = ? WHERE \"CQ_STATE\" = ? AND \"CQ_WORKER_ID\" LIKE ?";
         LOG.debug("Going to execute update <{}>", s);
         // It isn't an error if the following returns no rows, as the local workers could have died
-        // with  nothing assigned to them.
-        int updated = stmt.executeUpdate(s);
+        
+        stmt.close();
+        PreparedStatement statement = dbConn.prepareStatement(s);
+        statement.setString(1, INITIATED_STATE);
+        statement.setString(2, WORKING_STATE);
+        statement.setString(3, hostname + "%");
+        int updated = statement.executeUpdate();
+        stmt = statement;
         LOG.debug("Set {} compaction queue entries to {} state for host {}", updated, INITIATED_RESPONSE, hostname);
         LOG.debug("Going to commit");
         dbConn.commit();
@@ -966,13 +972,17 @@ class CompactionTxnHandler extends TxnHandler {
         dbConn = getDbConn(Connection.TRANSACTION_READ_COMMITTED, connPoolCompaction);
         long latestValidStart = getDbTime(dbConn) - timeout;
         stmt = dbConn.createStatement();
-        String s = "UPDATE \"COMPACTION_QUEUE\" SET \"CQ_WORKER_ID\" = NULL, \"CQ_START\" = NULL, \"CQ_STATE\" = '"
-          + INITIATED_STATE+ "' WHERE \"CQ_STATE\" = '" + WORKING_STATE + "' AND \"CQ_START\" < "
+        String s = "UPDATE \"COMPACTION_QUEUE\" SET \"CQ_WORKER_ID\" = NULL, \"CQ_START\" = NULL, \"CQ_STATE\" = ? WHERE \"CQ_STATE\" = ? AND \"CQ_START\" < "
           +  latestValidStart;
         LOG.debug("Going to execute update <{}", s);
         // It isn't an error if the following returns no rows, as the local workers could have died
-        // with  nothing assigned to them.
-        int updated = stmt.executeUpdate(s);
+        
+        stmt.close();
+        PreparedStatement statement = dbConn.prepareStatement(s);
+        statement.setString(1, INITIATED_STATE);
+        statement.setString(2, WORKING_STATE);
+        int updated = statement.executeUpdate();
+        stmt = statement;
         LOG.info("{} compaction queue entries timed out, set back to {} state. Latest valid start: {}", updated,
             INITIATED_RESPONSE, latestValidStart);
         LOG.debug("Going to commit");

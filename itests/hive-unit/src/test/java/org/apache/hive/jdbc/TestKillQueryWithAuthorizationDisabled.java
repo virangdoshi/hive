@@ -18,6 +18,7 @@
 
 package org.apache.hive.jdbc;
 
+import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -120,15 +121,18 @@ public class TestKillQueryWithAuthorizationDisabled {
     String tblName = testDbName + "." + tableName;
     String dataFileDir = conf.get("test.data.files").replace('\\', '/').replace("c:", "");
     Path dataFilePath = new Path(dataFileDir, "kv1.txt");
-    String udfName = SleepMsUDF.class.getName();
     stmt.execute("drop database if exists " + testDbName + " cascade");
     stmt.execute("create database " + testDbName);
     stmt.execute("dfs -put " + dataFilePath.toString() + " " + "kv1.txt");
     stmt.execute("use " + testDbName);
     stmt.execute("create table " + tblName + " (int_col int, value string) ");
     stmt.execute("load data inpath 'kv1.txt' into table " + tblName);
-    stmt.execute("create function sleepMsUDF as '" + udfName + "'");
+    stmt.close();
 
+    PreparedStatement statement = conDefault.prepareStatement("create function sleepMsUDF as ?");
+    statement.setString(1, SleepMsUDF.class.getName());
+    statement.execute();
+    stmt = statement;
     stmt.close();
     conDefault.close();
   }
@@ -152,7 +156,7 @@ public class TestKillQueryWithAuthorizationDisabled {
     Connection con1 = BaseJdbcWithMiniLlap.getConnection(miniHS2.getJdbcURL(testDbName), user, "bar");
     Connection con2 = BaseJdbcWithMiniLlap.getConnection(miniHS2.getJdbcURL(testDbName), killUser, "bar");
 
-    final Statement stmt2 = con2.createStatement();
+    final PreparedStatement stmt2 = con2.prepareStatement("kill query ?");
     final HiveStatement stmt = (HiveStatement) con1.createStatement();
     final StringBuffer stmtQueryId = new StringBuffer();
 
@@ -198,7 +202,8 @@ public class TestKillQueryWithAuthorizationDisabled {
           }
         }
         System.out.println("Killing query: " + queryId);
-        stmt2.execute("kill query '" + queryId + "'");
+        stmt2.setString(1, queryId);
+        stmt2.execute();
         stmt2.close();
         break;
       } catch (SQLException e) {

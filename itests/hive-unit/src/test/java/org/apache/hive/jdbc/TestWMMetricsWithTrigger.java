@@ -18,6 +18,7 @@
 package org.apache.hive.jdbc;
 
 import com.google.common.collect.Lists;
+import java.sql.PreparedStatement;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.common.metrics.MetricsTestUtils;
@@ -114,14 +115,17 @@ public class TestWMMetricsWithTrigger {
     String tblName = testDbName + "." + tableName;
     String dataFileDir = conf.get("test.data.files").replace('\\', '/').replace("c:", "");
     Path dataFilePath = new Path(dataFileDir, "kv1.txt");
-    String udfName = TestKillQueryWithAuthorizationDisabled.SleepMsUDF.class.getName();
     stmt.execute("drop database if exists " + testDbName + " cascade");
     stmt.execute("create database " + testDbName);
     stmt.execute("dfs -put " + dataFilePath.toString() + " " + "kv1.txt");
     stmt.execute("use " + testDbName);
     stmt.execute("create table " + tblName + " (int_col int, value string) ");
     stmt.execute("load data inpath 'kv1.txt' into table " + tblName);
-    stmt.execute("create function sleep as '" + udfName + "'");
+    stmt.close();
+    PreparedStatement statement = conDefault.prepareStatement("create function sleep as ?");
+    statement.setString(1, TestKillQueryWithAuthorizationDisabled.SleepMsUDF.class.getName());
+    statement.execute();
+    stmt = statement;
     stmt.close();
     conDefault.close();
     setupPlanAndTrigger();

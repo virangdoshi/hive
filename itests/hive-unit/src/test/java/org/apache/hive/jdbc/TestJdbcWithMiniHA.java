@@ -18,6 +18,7 @@
 
 package org.apache.hive.jdbc;
 
+import java.sql.PreparedStatement;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -178,15 +179,15 @@ public class TestJdbcWithMiniHA {
 
   // create table and pupulate with kv1.txt
   private void setupKv1Tabs(String tableName) throws SQLException {
-    Statement stmt = hs2Conn.createStatement();
+    PreparedStatement stmt = hs2Conn.prepareStatement("load data local inpath ? into table " + tableName);
     // create table
     stmt.execute("CREATE TABLE " + tableName
         + " (under_col INT COMMENT 'the under column', value STRING)"
         + " COMMENT ' test table'");
 
-    // load data
-    stmt.execute("load data local inpath '"
-        + dataFilePath.toString() + "' into table " + tableName);
+    
+    stmt.setString(1, dataFilePath.toString());
+    stmt.execute();
   }
 
   // run given query and validate expecated result
