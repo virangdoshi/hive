@@ -19,6 +19,7 @@
 package org.apache.hadoop.hive.ql.exec.repl;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.atlas.model.impexp.AtlasImportRequest;
 import org.apache.atlas.model.impexp.AtlasImportResult;
 import org.apache.hadoop.fs.FileSystem;
@@ -138,7 +139,7 @@ public class AtlasLoadTask extends Task<AtlasLoadWork> implements Serializable {
         try {
           FileSystem fs = metadataPath.getFileSystem(conf);
           br = new BufferedReader(new InputStreamReader(fs.open(metadataPath), Charset.defaultCharset()));
-          String line = br.readLine();
+          String line = BoundedLineReader.readLine(br, 5_000_000);
           if (line == null) {
             throw new SemanticException(ErrorMsg.REPL_INVALID_INTERNAL_CONFIG_FOR_SERVICE.format("Could not read stored " +
               "src FS Uri from atlas metadata file", ReplUtils.REPL_ATLAS_SERVICE));

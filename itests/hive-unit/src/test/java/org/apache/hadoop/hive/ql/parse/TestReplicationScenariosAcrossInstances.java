@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.parse;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -2094,7 +2095,7 @@ public class TestReplicationScenariosAcrossInstances extends BaseReplicationAcro
                 new InputStreamReader(in, StandardCharsets.UTF_8));
       String line = null;
       StringBuilder builder = new StringBuilder();
-      while ((line=bufferedReader.readLine())!=null){
+      while ((line=BoundedLineReader.readLine(bufferedReader, 5_000_000))!=null){
         builder.append(line);
         builder.append("\n");
       }
@@ -2318,7 +2319,7 @@ public class TestReplicationScenariosAcrossInstances extends BaseReplicationAcro
     try {
       br = new BufferedReader(new InputStreamReader(
               fs.open(new Path(atlasDumpRoot, EximUtil.METADATA_NAME)), Charset.defaultCharset()));
-      String[] lineContents = br.readLine().split("\t", 5);
+      String[] lineContents = BoundedLineReader.readLine(br, 5_000_000).split("\t", 5);
       assertEquals(primary.hiveConf.get("fs.defaultFS"), lineContents[0]);
       assertEquals(0, Long.parseLong(lineContents[1]));
     } finally {

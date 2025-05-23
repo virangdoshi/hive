@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.errors;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
@@ -136,7 +137,7 @@ public class TestTaskLogProcessor {
     List<String> list = new ArrayList<String>(48);
     String string;
     while (true) {
-      string = br.readLine();
+      string = BoundedLineReader.readLine(br, 5_000_000);
       if (string == null) {
         break;
       } else {

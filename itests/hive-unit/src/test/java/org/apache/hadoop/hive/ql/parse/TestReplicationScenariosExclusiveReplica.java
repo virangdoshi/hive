@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.parse;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hdfs.DistributedFileSystem;
@@ -1122,7 +1123,7 @@ public class TestReplicationScenariosExclusiveReplica extends BaseReplicationAcr
       reader = new BufferedReader(new InputStreamReader(inputStream));
       Set tableNames = new HashSet<>(Arrays.asList(tableList));
       int numTable = 0;
-      for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+      for (String line = BoundedLineReader.readLine(reader, 5_000_000); line != null; line = BoundedLineReader.readLine(reader, 5_000_000)) {
         numTable++;
         Assert.assertTrue(tableNames.contains(line));
       }

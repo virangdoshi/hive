@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.exec.repl.util;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -214,7 +215,7 @@ public class FileList implements AutoCloseable, Iterator<String> {
         }
         backingFileReader = new BufferedReader(new InputStreamReader(fs.open(backingFile)));
       }
-      nextElement = backingFileReader.readLine();
+      nextElement = BoundedLineReader.readLine(backingFileReader, 5_000_000);
       return nextElement;
     } catch (IOException e) {
       LOG.error("Exception while reading file {}.", backingFile, e);

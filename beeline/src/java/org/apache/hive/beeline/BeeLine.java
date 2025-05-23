@@ -22,6 +22,7 @@
  */
 package org.apache.hive.beeline;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -1590,7 +1591,7 @@ public class BeeLine implements Closeable {
              new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
       StringBuilder cmd = null;
       while (true) {
-        String scriptLine = reader.readLine();
+        String scriptLine = BoundedLineReader.readLine(reader, 5_000_000);
 
         if (scriptLine == null) {
           break;

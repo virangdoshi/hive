@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.io.orc;
 
+import io.github.pixee.security.BoundedLineReader;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -124,7 +125,7 @@ public class TestNewInputOutputFormat {
     int count=0;
     String line;
     String lastLine=null;
-    while ((line=reader.readLine()) != null) {
+    while ((line=BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       count++;
       lastLine = line;
     }
@@ -440,7 +441,7 @@ public class TestNewInputOutputFormat {
 
     BufferedReader reader = new BufferedReader(
         new InputStreamReader(localFs.open(outputFilePath)));
-    String line=reader.readLine();
+    String line=BoundedLineReader.readLine(reader, 5_000_000);
     
     assertEquals(line, "{null, 1, null, 65536, null, null, null, " +
         "null, null, null, null, null, null, null}");

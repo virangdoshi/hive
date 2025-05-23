@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.exec.repl;
 
+import io.github.pixee.security.BoundedLineReader;
 import jodd.exception.UncheckedException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.ContentSummary;
@@ -131,7 +132,7 @@ public class ReplicationMigrationTool implements Tool {
     long startTime = System.currentTimeMillis();
     try {
       String line;
-      line = br.readLine();
+      line = BoundedLineReader.readLine(br, 5_000_000);
       while (line != null) {
         LOG.debug("Line read from {} is {} :", dumpPath, line);
         DirectoryProcessor dProcessor =
@@ -139,7 +140,7 @@ public class ReplicationMigrationTool implements Tool {
                 filtersPattern, threadPoolChecksum);
         Future<Boolean> future = threadPool.submit(dProcessor);
         futures.add(future);
-        line = br.readLine();
+        line = BoundedLineReader.readLine(br, 5_000_000);
       }
 
       // Get All the futures.

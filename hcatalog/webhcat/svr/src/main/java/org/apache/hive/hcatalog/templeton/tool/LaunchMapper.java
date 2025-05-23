@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.templeton.tool;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.hadoop.security.Credentials;
 import org.apache.hadoop.security.token.Token;
 import org.apache.hadoop.security.token.TokenIdentifier;
@@ -568,7 +569,7 @@ public class LaunchMapper extends Mapper<NullWritable, NullWritable, Text, Text>
         writer = new PrintWriter(new OutputStreamWriter(out, enc));
 
         String line;
-        while ((line = reader.readLine()) != null) {
+        while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
           writer.println(line);
           String percent = TempletonUtils.extractPercentComplete(line);
           String childid = TempletonUtils.extractChildJobId(line);

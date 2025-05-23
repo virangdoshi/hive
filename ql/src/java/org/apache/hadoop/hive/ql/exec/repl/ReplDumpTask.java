@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.exec.repl;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.hadoop.fs.FSDataOutputStream;
 import org.apache.hadoop.fs.FileStatus;
@@ -1080,7 +1081,7 @@ public class ReplDumpTask extends Task<ReplDumpWork> implements Serializable {
         try {
           FileSystem fs = ackFile.getFileSystem(conf);
           br = new BufferedReader(new InputStreamReader(fs.open(ackFile), Charset.defaultCharset()));
-          long lastEventID = Long.parseLong(br.readLine());
+          long lastEventID = Long.parseLong(BoundedLineReader.readLine(br, 5_000_000));
           return lastEventID;
         } finally {
           if (br != null) {

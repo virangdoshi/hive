@@ -18,6 +18,7 @@
 
 package org.apache.hive.service.cli.operation;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -196,7 +197,7 @@ public class HiveCommandOperation extends ExecuteStatementOperation {
 
     for (int i = 0; i < nLines || nLines <= 0; ++i) {
       try {
-        String line = resultReader.readLine();
+        String line = BoundedLineReader.readLine(resultReader, 5_000_000);
         if (line == null) {
           // reached the end of the result file
           break;

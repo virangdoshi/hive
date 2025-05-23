@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.session;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -209,7 +210,7 @@ public class OperationLog {
 
       try {
         while (readCount > 0) {
-          final String line = in.readLine();
+          final String line = BoundedLineReader.readLine(in, 5_000_000);
           readCount--;
           final boolean added = CollectionUtils.addIgnoreNull(logs, line);
           if (!added) {

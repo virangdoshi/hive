@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.contrib.mr;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -152,7 +153,7 @@ public final class GenericMR {
 
     private String[] readNext() {
       try {
-        final String line = reader.readLine();
+        final String line = BoundedLineReader.readLine(reader, 5_000_000);
         return (line == null ? null : line.split("\t"));
       } catch (final Exception e) {
         throw new RuntimeException(e);

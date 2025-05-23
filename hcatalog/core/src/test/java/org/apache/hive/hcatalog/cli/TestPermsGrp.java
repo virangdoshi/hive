@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.cli;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
@@ -223,13 +224,13 @@ public class TestPermsGrp {
 
     String line;
     BufferedReader r = new BufferedReader(new InputStreamReader(p.getInputStream()));
-    while ((line = r.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(r, 5_000_000)) != null) {
         System.out.println(line);
     }
     r.close();
 
     r = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-    while ((line = r.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(r, 5_000_000)) != null) {
         System.err.println(line);
     }
     r.close();

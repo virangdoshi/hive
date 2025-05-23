@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.utils;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -60,7 +61,7 @@ public class DataWriterSlave {
     @Override
     public boolean hasNext() {
       try {
-        curLine = reader.readLine();
+        curLine = BoundedLineReader.readLine(reader, 5_000_000);
       } catch (IOException e) {
         e.printStackTrace();
       }

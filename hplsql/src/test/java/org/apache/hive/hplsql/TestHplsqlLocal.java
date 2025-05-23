@@ -18,6 +18,7 @@
 
 package org.apache.hive.hplsql;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -488,7 +489,7 @@ public class TestHplsqlLocal {
     StringBuilder sb = new StringBuilder();
     BufferedReader reader = new BufferedReader(new StringReader(s));
     String line = null;
-    while ((line = reader.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       if (!line.startsWith("log4j:")
               && !line.contains("INFO Log4j")
               && !line.startsWith("SLF4J")

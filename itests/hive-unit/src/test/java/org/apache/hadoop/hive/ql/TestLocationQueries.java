@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -76,7 +77,7 @@ public class TestLocationQueries extends BaseTestQueries {
         String line;
         int locationCount = 0;
         Pattern p = Pattern.compile("location:([^,)]+)");
-        while((line = in.readLine()) != null) {
+        while((line = BoundedLineReader.readLine(in, 5_000_000)) != null) {
           Matcher m = p.matcher(line);
           if (m.find()) {
             File f = new File(m.group(1));

@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.udf.generic;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -141,7 +142,7 @@ public class GenericUDFInFile extends GenericUDF {
     BufferedReader reader = getReaderFor(filePath);
     try {
       String line;
-      while((line = reader.readLine()) != null) {
+      while((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
         set.add(line);
       }
     } catch (Exception e) {

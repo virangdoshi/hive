@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.templeton.tool;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -61,7 +62,7 @@ abstract class JobIDParser {
     Matcher matcher;
     String line;
     List<String> jobs = new ArrayList<String>();
-    while ((line=in.readLine())!=null) {
+    while ((line=BoundedLineReader.readLine(in, 5_000_000))!=null) {
       matcher = pattern.matcher(line);
       if (matcher.find()) {
         String jobid = matcher.group(1);

@@ -18,6 +18,7 @@
 package org.apache.hadoop.hive.metastore.tools.schematool;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
@@ -402,7 +403,7 @@ public class MetastoreSchemaTool {
         LOG.debug("Going to invoke file that contains:");
         try (BufferedReader reader = new BufferedReader(new FileReader(sqlScriptFile))) {
           String line;
-          while ((line = reader.readLine()) != null) {
+          while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
             LOG.debug("script: " + line);
           }
         }

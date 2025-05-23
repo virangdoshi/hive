@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.parse;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
@@ -548,7 +549,7 @@ public class ReplicationTestUtils {
     InputStream inputStream = fileSystem.open(externalTableFileList);
     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
     Set<String> tableNames = new HashSet<>();
-    for (String line = reader.readLine(); line != null; line = reader.readLine()) {
+    for (String line = BoundedLineReader.readLine(reader, 5_000_000); line != null; line = BoundedLineReader.readLine(reader, 5_000_000)) {
       String[] components = line.split(DirCopyWork.URI_SEPARATOR);
       Assert.assertEquals("The file should have sourcelocation#targetlocation#tblName#copymode", 5,
           components.length);
@@ -591,7 +592,7 @@ public class ReplicationTestUtils {
     try (FSDataInputStream fdis = fs.open(path);
          BufferedReader br = new BufferedReader(new InputStreamReader(fdis))) {
       // Assumes event is at least on first line.
-      String line = br.readLine();
+      String line = BoundedLineReader.readLine(br, 5_000_000);
       Assert.assertNotNull(line);
       // Assumes event is present.
       int index = line.indexOf("\t");

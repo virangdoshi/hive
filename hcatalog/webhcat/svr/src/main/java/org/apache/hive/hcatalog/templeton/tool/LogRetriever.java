@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.templeton.tool;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -237,7 +238,7 @@ public class LogRetriever {
     BufferedReader reader = new BufferedReader(new InputStreamReader(
         urlConnection.getInputStream()));
     String line;
-    while ((line = reader.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       for (int i = 0; i < pattern.length; i++) {
         Matcher matcher = pattern[i].matcher(line);
         if (matcher.find()) {
@@ -268,7 +269,7 @@ public class LogRetriever {
   
       // Copy conf file
       String line;
-      while ((line = reader.readLine()) != null) {
+      while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
         writer.println(line);
       }
     } finally {
@@ -390,7 +391,7 @@ public class LogRetriever {
   
         // Copy log file
         String line;
-        while ((line = reader.readLine()) != null) {
+        while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
           writer.println(line);
         }
       } finally {

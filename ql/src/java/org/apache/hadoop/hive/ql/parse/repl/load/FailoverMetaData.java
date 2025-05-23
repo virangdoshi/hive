@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.ql.parse.repl.load;
 
+import io.github.pixee.security.BoundedLineReader;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -94,7 +95,7 @@ public class FailoverMetaData {
                 FileSystem fs = metadataFile.getFileSystem(hiveConf);
                 br = new BufferedReader(new InputStreamReader(fs.open(metadataFile)));
                 String line;
-                if ((line = br.readLine()) != null) {
+                if ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
                     FailoverMetaData otherDMD = JSON_OBJECT_MAPPER.readValue(line, FailoverMetaData.class);
                     setMetaData(otherDMD);
                 } else {

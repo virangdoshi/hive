@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.tools;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -3972,12 +3973,12 @@ public class GenVectorCode extends Task {
 
   static String readFile(File templateFile) throws IOException {
     BufferedReader r = new BufferedReader(new FileReader(templateFile));
-    String line = r.readLine();
+    String line = BoundedLineReader.readLine(r, 5_000_000);
     StringBuilder b = new StringBuilder();
     while (line != null) {
       b.append(line);
       b.append("\n");
-      line = r.readLine();
+      line = BoundedLineReader.readLine(r, 5_000_000);
     }
     r.close();
     return b.toString();

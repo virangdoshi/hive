@@ -18,6 +18,7 @@
  */
 package org.apache.hive.hcatalog.templeton.tool;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.IOException;
@@ -98,7 +99,7 @@ public class HDFSStorage implements TempletonStorage {
       in = new BufferedReader(new InputStreamReader(fs.open(p)));
       String line = null;
       String val = "";
-      while ((line = in.readLine()) != null) {
+      while ((line = BoundedLineReader.readLine(in, 5_000_000)) != null) {
         if (!val.equals("")) {
           val += "\n";
         }

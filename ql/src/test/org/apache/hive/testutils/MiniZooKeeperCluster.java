@@ -18,6 +18,7 @@
  */
 package org.apache.hive.testutils;
 
+import io.github.pixee.security.BoundedLineReader;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -472,7 +473,7 @@ public class MiniZooKeeperCluster {
 
           Reader isr = new InputStreamReader(sock.getInputStream());
           reader = new BufferedReader(isr);
-          String line = reader.readLine();
+          String line = BoundedLineReader.readLine(reader, 5_000_000);
           if (line != null && line.startsWith("Zookeeper version:")) {
             return true;
           }

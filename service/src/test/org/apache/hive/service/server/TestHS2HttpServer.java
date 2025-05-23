@@ -20,6 +20,7 @@ package org.apache.hive.service.server;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.pixee.security.BoundedLineReader;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -118,7 +119,7 @@ public class TestHS2HttpServer {
         new BufferedReader(new InputStreamReader(conn.getInputStream()));
     boolean contents = false;
     String line;
-    while ((line = reader.readLine()) != null) {
+    while ((line = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       if (line.contains("Process Thread Dump:")) {
         contents = true;
       }
@@ -163,7 +164,7 @@ public class TestHS2HttpServer {
     StringBuilder response = new StringBuilder();
     String inputLine;
 
-    while ((inputLine = reader.readLine()) != null) {
+    while ((inputLine = BoundedLineReader.readLine(reader, 5_000_000)) != null) {
       response.append(inputLine);
     }
     reader.close();
@@ -294,7 +295,7 @@ public class TestHS2HttpServer {
         HttpEntity entity1 = response1.getEntity();
         BufferedReader br = new BufferedReader(new InputStreamReader(entity1.getContent()));
         String line;
-        while ((line = br.readLine()) != null) {
+        while ((line = BoundedLineReader.readLine(br, 5_000_000)) != null) {
           if (line.contains(metastorePasswd)) {
             pwdValFound = line;
           }
