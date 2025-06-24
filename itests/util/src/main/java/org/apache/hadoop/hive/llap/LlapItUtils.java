@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.llap;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -44,8 +46,8 @@ public class LlapItUtils {
     MiniLlapCluster llapCluster;
     LOG.info("Using conf dir: {}", confDir);
     if (confDir != null && !confDir.isEmpty()) {
-      conf.addResource(new URL("file://" + new File(confDir).toURI().getPath()
-          + "/tez-site.xml"));
+      conf.addResource(Urls.create("file://" + new File(confDir).toURI().getPath()
+          + "/tez-site.xml", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS));
     }
 
     Configuration daemonConf = new LlapDaemonConfiguration(conf);

@@ -19,6 +19,8 @@
 package org.apache.hadoop.hive.ql.exec;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.beans.DefaultPersistenceDelegate;
 import java.beans.Encoder;
 import java.beans.Expression;
@@ -2180,7 +2182,7 @@ public final class Utilities {
     URL oneurl = null;
     try {
       if (StringUtils.indexOf(onestr, "file:/") == 0) {
-        oneurl = new URL(onestr);
+        oneurl = Urls.create(onestr, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       } else {
         oneurl = new File(onestr).toURL();
       }

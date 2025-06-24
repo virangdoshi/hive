@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql.exec.mr;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -61,7 +63,7 @@ public final class Throttle {
 
       while (true) {
         // read in the first 1K characters from the URL
-        URL url = new URL(tracker);
+        URL url = Urls.create(tracker, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
         LOG.debug("Throttle: URL " + tracker);
         InputStream in = null;
         try {

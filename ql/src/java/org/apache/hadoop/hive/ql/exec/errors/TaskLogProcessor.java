@@ -18,6 +18,8 @@
 
 package org.apache.hadoop.hive.ql.exec.errors;
 
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -115,7 +117,7 @@ public class TaskLogProcessor {
       // each of the ErrorHeuristics. Repeat for all the lines in the log.
       URL taskAttemptLogUrl;
       try {
-        taskAttemptLogUrl = new URL(urlString);
+        taskAttemptLogUrl = Urls.create(urlString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       } catch (MalformedURLException e) {
         LOG.error("Bad task log URL", e);
         continue;
@@ -188,7 +190,7 @@ public class TaskLogProcessor {
       // Open the log file, and read the lines, parse out stack traces
       URL taskAttemptLogUrl;
       try {
-        taskAttemptLogUrl = new URL(urlString);
+        taskAttemptLogUrl = Urls.create(urlString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       } catch(MalformedURLException e) {
         throw new RuntimeException("Bad task log url", e);
       }

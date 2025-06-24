@@ -20,6 +20,8 @@ package org.apache.hive.service.server;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
@@ -111,7 +113,7 @@ public class TestHS2HttpServer {
   @Test
   public void testStackServlet() throws Exception {
     String baseURL = "http://localhost:" + webUIPort + "/stacks";
-    URL url = new URL(baseURL);
+    URL url = Urls.create(baseURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     Assert.assertEquals(HTTP_OK, conn.getResponseCode());
     BufferedReader reader =
@@ -129,7 +131,7 @@ public class TestHS2HttpServer {
   @Test
   public void testBaseUrlResponseHeader() throws Exception{
     String baseURL = "http://localhost:" + webUIPort + "/";
-    URL url = new URL(baseURL);
+    URL url = Urls.create(baseURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     String xfoHeader = conn.getHeaderField("X-FRAME-OPTIONS");
     String xXSSProtectionHeader = conn.getHeaderField("X-XSS-Protection");
@@ -146,7 +148,7 @@ public class TestHS2HttpServer {
   }
 
   private BufferedReader getReaderForUrl(String urlString, int expectedStatus) throws Exception {
-    URL url = new URL(urlString);
+    URL url = Urls.create(urlString, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     Assert.assertEquals(expectedStatus, conn.getResponseCode());
     if (expectedStatus != HTTP_OK) {
@@ -251,7 +253,7 @@ public class TestHS2HttpServer {
   @Test
   public void testWrongApiVersion() throws Exception {
     String wrongApiVersionUrl = "http://localhost:" + webUIPort + "/api/v2";
-    URL url = new URL(wrongApiVersionUrl);
+    URL url = Urls.create(wrongApiVersionUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     Assert.assertEquals(HttpURLConnection.HTTP_BAD_REQUEST, conn.getResponseCode());
   }
@@ -259,7 +261,7 @@ public class TestHS2HttpServer {
   @Test
   public void testWrongRoute() throws Exception {
     String wrongRouteUrl = "http://localhost:" + webUIPort + "/api/v1/nonexistingRoute";
-    URL url = new URL(wrongRouteUrl);
+    URL url = Urls.create(wrongRouteUrl, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     Assert.assertEquals(HttpURLConnection.HTTP_NOT_FOUND, conn.getResponseCode());
   }
@@ -317,7 +319,7 @@ public class TestHS2HttpServer {
   }
 
   private String getURLResponseAsString(String baseURL) throws IOException {
-    URL url = new URL(baseURL);
+    URL url = Urls.create(baseURL, Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
     Assert.assertEquals("Got an HTTP response code other thank OK.", HTTP_OK, conn.getResponseCode());
     StringWriter writer = new StringWriter();

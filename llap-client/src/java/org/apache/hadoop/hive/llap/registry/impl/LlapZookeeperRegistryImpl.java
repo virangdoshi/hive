@@ -19,6 +19,8 @@
 package org.apache.hadoop.hive.llap.registry.impl;
 
 import com.google.common.annotations.VisibleForTesting;
+import io.github.pixee.security.HostValidator;
+import io.github.pixee.security.Urls;
 import org.apache.curator.framework.recipes.atomic.AtomicValue;
 import org.apache.curator.framework.recipes.atomic.DistributedAtomicLong;
 
@@ -117,7 +119,7 @@ public class LlapZookeeperRegistryImpl
     final String scheme = isSSL ? "https" : "http";
     final URL serviceURL;
     try {
-      serviceURL = new URL(scheme, hostname, servicePort, "");
+      serviceURL = Urls.create(scheme, hostname, servicePort, "", Urls.HTTP_PROTOCOLS, HostValidator.DENY_COMMON_INFRASTRUCTURE_TARGETS);
       return RegistryTypeUtils.webEndpoint(IPC_SERVICES, serviceURL.toURI());
     } catch (MalformedURLException e) {
       throw new RuntimeException(e);
