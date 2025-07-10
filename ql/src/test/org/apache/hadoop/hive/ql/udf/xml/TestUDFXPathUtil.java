@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.udf.xml;
 
+import java.nio.file.Files;
 import javax.xml.xpath.XPathConstants;
 
 import org.apache.commons.io.FileUtils;
@@ -86,7 +87,7 @@ public class TestUDFXPathUtil {
   public void testEmbedFailure() throws Exception {
 
     String secretValue = String.valueOf(Math.random());
-    File tempFile = File.createTempFile("verifyembed", ".tmp");
+    File tempFile = Files.createTempFile("verifyembed", ".tmp").toFile();
     tempFile.deleteOnExit();
     String fname = tempFile.getAbsolutePath();
 

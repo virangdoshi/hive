@@ -17,6 +17,7 @@
  */
 package org.apache.hive.beeline.cli;
 
+import java.nio.file.Files;
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.junit.After;
@@ -325,7 +326,7 @@ public class TestHiveCli {
     File file = null;
     BufferedWriter bw = null;
     try {
-      file = File.createTempFile("test", ".sql");
+      file = Files.createTempFile("test", ".sql").toFile();
       bw = new BufferedWriter(new FileWriter(file));
       bw.write(context);
     } catch (IOException e) {

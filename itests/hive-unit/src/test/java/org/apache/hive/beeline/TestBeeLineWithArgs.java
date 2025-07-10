@@ -18,6 +18,7 @@
 
 package org.apache.hive.beeline;
 
+import java.nio.file.Files;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -241,7 +242,7 @@ import org.junit.Test;
       OutStream streamType, List<Tuple<String>> expectedMatches, List<Modes> modes)
       throws Throwable {
     // Put the script content in a temp file
-    File scriptFile = File.createTempFile(this.getClass().getSimpleName(), "temp");
+    File scriptFile = Files.createTempFile(this.getClass().getSimpleName(), "temp").toFile();
     System.out.println("script file is " + scriptFile.getAbsolutePath());
     scriptFile.deleteOnExit();
     PrintStream os = new PrintStream(new FileOutputStream(scriptFile));
@@ -699,7 +700,7 @@ import org.junit.Test;
     final String EXPECTED_PATTERN = " default ";
 
     // Create and delete a temp file
-    File scriptFile = File.createTempFile("beelinenegative", "temp");
+    File scriptFile = Files.createTempFile("beelinenegative", "temp").toFile();
     scriptFile.delete();
 
     List<String> argList = getBaseArgs(miniHS2.getBaseJdbcURL());

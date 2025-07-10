@@ -22,6 +22,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import org.apache.hadoop.hive.metastore.HiveMetaException;
 
@@ -61,7 +62,7 @@ public class SchemaToolTaskCreateLogsTable extends SchemaToolTask {
 
   private File generateLogsTableScript() throws HiveMetaException {
     try {
-      File tmpFile = File.createTempFile("schematool", ".sql");
+      File tmpFile = Files.createTempFile("schematool", ".sql").toFile();
       tmpFile.deleteOnExit();
       FileWriter fstream = new FileWriter(tmpFile.getPath());
       try (BufferedWriter out = new BufferedWriter(fstream)) {
