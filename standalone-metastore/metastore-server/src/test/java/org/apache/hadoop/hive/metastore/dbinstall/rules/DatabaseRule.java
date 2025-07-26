@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore.dbinstall.rules;
 
+import io.github.pixee.security.SystemCommand;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -173,7 +174,7 @@ public abstract class DatabaseRule extends ExternalResource {
   private ProcessResults runCmd(String[] cmd, long secondsToWait)
       throws IOException, InterruptedException {
     LOG.info("Going to run: " + StringUtils.join(cmd, " "));
-    Process proc = Runtime.getRuntime().exec(cmd);
+    Process proc = SystemCommand.runCommand(Runtime.getRuntime(), cmd);
     if (!proc.waitFor(secondsToWait, TimeUnit.SECONDS)) {
       throw new RuntimeException(
           "Process " + cmd[0] + " failed to run in " + secondsToWait + " seconds");
