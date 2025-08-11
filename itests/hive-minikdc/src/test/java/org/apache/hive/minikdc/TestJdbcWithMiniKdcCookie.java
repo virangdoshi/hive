@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collection;
@@ -105,19 +106,20 @@ public class TestJdbcWithMiniKdcCookie {
     dataFile = new File(hiveConf.get("test.data.files"), "kv1.txt");
     Connection hs2Conn = getConnection(MiniHiveKdc.HIVE_TEST_USER_1);
 
-    Statement stmt = hs2Conn.createStatement();
+    PreparedStatement stmt = hs2Conn.prepareStatement("load data local inpath ? into table " + tableName);
 
     // create table
     stmt.execute("create table " + tableName + "(key int, value string) ");
-    stmt.execute("load data local inpath '" + dataFile + "' into table " + tableName);
+    stmt.setString(1, dataFile);
 
-    // run a query in a loop so that we hit a 401 occasionally
+    
+    stmt.execute();
     for (int i = 0; i < 10; i++) {
       stmt.execute("select * from " + tableName );
     }
     stmt.execute("drop table " + tableName);
-    stmt.close();
 
+    stmt.close();
     testCookieNegative();
   }
 

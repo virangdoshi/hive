@@ -17,6 +17,7 @@
  */
 package org.apache.hive.beeline;
 
+import java.sql.PreparedStatement;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
@@ -311,10 +312,13 @@ public class TestBeelinePasswordOption {
       LOG.error("Failed due to exception ", ex);
       fail("Unable to create setup table " + tableName + ex.toString());
     }
-    // create table
-    stmt.execute("create table " + tableName
-        + " (under_col int comment 'the under column', value string) comment '" + tableComment
-        + "'");
+    
+    stmt.close();
+    PreparedStatement statement = con.prepareStatement("create table " + tableName
+        + " (under_col int comment 'the under column', value string) comment ?");
+    statement.setString(1, tableComment);
+    statement.execute();
+    stmt = statement;
   }
 
   private List<String> getBaseArgs(String jdbcUrl) {
