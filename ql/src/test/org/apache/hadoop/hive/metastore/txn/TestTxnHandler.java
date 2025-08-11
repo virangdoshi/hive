@@ -17,6 +17,7 @@
  */
 package org.apache.hadoop.hive.metastore.txn;
 
+import java.sql.PreparedStatement;
 import org.apache.hadoop.hive.common.JavaUtils;
 import org.apache.hadoop.hive.common.TableName;
 import org.apache.hadoop.hive.common.ValidReadTxnList;
@@ -1471,16 +1472,15 @@ public class TestTxnHandler {
       final TxnHandler tHndlr = (TxnHandler)txnHandler;
       Connection conn = tHndlr.getDbConn(Connection.TRANSACTION_SERIALIZABLE);
       try {
-        Statement stmt = conn.createStatement();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO \"HIVE_LOCKS\" (\"HL_LOCK_EXT_ID\", \"HL_LOCK_INT_ID\", \"HL_TXNID\", \"HL_DB\", \"HL_TABLE\", \"HL_PARTITION\", \"HL_LOCK_STATE\", \"HL_LOCK_TYPE\", \"HL_LAST_HEARTBEAT\", \"HL_USER\", \"HL_HOST\") VALUES (1, 1, 1, 'MYDB', 'MYTABLE', 'MYPARTITION', ?, ?, " + now +
+                ", 'fred', 'scooby.com')");
         long now = tHndlr.getDbTime(conn);
         stmt.executeUpdate("INSERT INTO \"TXNS\" (\"TXN_ID\", \"TXN_STATE\", \"TXN_STARTED\", \"TXN_LAST_HEARTBEAT\", " +
                 "txn_user, txn_host) values (1, 'o', " + now + ", " + now + ", 'shagy', " +
                 "'scooby.com')");
-        stmt.executeUpdate("INSERT INTO \"HIVE_LOCKS\" (\"HL_LOCK_EXT_ID\", \"HL_LOCK_INT_ID\", \"HL_TXNID\", " +
-                "\"HL_DB\", \"HL_TABLE\", \"HL_PARTITION\", \"HL_LOCK_STATE\", \"HL_LOCK_TYPE\", \"HL_LAST_HEARTBEAT\", " +
-                "\"HL_USER\", \"HL_HOST\") VALUES (1, 1, 1, 'MYDB', 'MYTABLE', 'MYPARTITION', '" +
-                tHndlr.LOCK_WAITING + "', '" + getEncoding(LockType.EXCLUSIVE) + "', " + now + ", 'fred', " +
-                "'scooby.com')");
+        stmt.setString(1, tHndlr.LOCK_WAITING);
+        stmt.setString(2, getEncoding(LockType.EXCLUSIVE));
+        stmt.executeUpdate();
         conn.commit();
       } finally {
         tHndlr.closeDbConn(conn);

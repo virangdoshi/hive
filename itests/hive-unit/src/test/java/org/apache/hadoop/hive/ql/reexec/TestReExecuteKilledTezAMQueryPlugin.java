@@ -18,6 +18,7 @@
 
 package org.apache.hadoop.hive.ql.reexec;
 
+import java.sql.PreparedStatement;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hadoop.yarn.api.records.ApplicationReport;
@@ -84,7 +85,6 @@ public class TestReExecuteKilledTezAMQueryPlugin {
     Statement stmt = conDefault.createStatement();
     String tblName = testDbName + "." + tableName;
     Path dataFilePath = new Path(dataFileDir, "kv1.txt");
-    String udfName = TestJdbcWithMiniLlapArrow.SleepMsUDF.class.getName();
     stmt.execute("drop database if exists " + testDbName + " cascade");
     stmt.execute("create database " + testDbName);
     stmt.execute("set role admin");
@@ -92,9 +92,13 @@ public class TestReExecuteKilledTezAMQueryPlugin {
     stmt.execute("use " + testDbName);
     stmt.execute("create table " + tblName + " (int_col int, value string) ");
     stmt.execute("load data inpath 'kv1.txt' into table " + tblName);
-    stmt.execute("create function sleepMsUDF as '" + udfName + "'");
-    stmt.execute("grant select on table " + tblName + " to role public");
+    stmt.close();
+    PreparedStatement statement = conDefault.prepareStatement("create function sleepMsUDF as ?");
 
+    statement.setString(1, TestJdbcWithMiniLlapArrow.SleepMsUDF.class.getName());
+    statement.execute();
+    stmt = statement;
+    stmt.execute("grant select on table " + tblName + " to role public");
     stmt.close();
     conDefault.close();
   }
